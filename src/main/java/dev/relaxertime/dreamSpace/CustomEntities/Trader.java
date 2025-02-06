@@ -52,6 +52,6 @@ public class Trader implements Listener {
         ItemMeta i_meta = i.getItemMeta();
         i_meta.setCustomModelData(CustomModelData);
         i.setItemMeta(i_meta);
-        shop.addItem(i);
+        shop.addItem(i.clone());
     }
 }
