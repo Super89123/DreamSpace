@@ -46,7 +46,7 @@ public class Trader implements Listener {
         e.getWhoClicked().getInventory().addItem(e.getCursor());
         e.setCancelled(true);
     }
-    @EventHandler
+
     public void addItem(ItemStack i, int CustomModelData){
         if (shop.getSize() < 18) return;
         ItemMeta i_meta = i.getItemMeta();
