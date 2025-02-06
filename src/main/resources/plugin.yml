@@ -1,0 +1,4 @@
+name: DreamSpace
+version: '1.0-SNAPSHOT'
+main: dev.relaxertime.dreamSpace.DreamSpace
+api-version: '1.20'
