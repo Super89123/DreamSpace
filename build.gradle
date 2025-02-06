@@ -27,20 +27,16 @@ repositories {
         url = "https://repo.papermc.io/repository/maven-public/"
     }
     maven {
-        name = 'citizens-repo'
-        url = 'https://maven.citizensnpcs.co/repo'
-    }
-    maven {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') {
-        exclude group: '*', module: '*'
-    }
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
 }
 
 def targetJavaVersion = 17
