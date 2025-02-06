@@ -34,20 +34,13 @@ public class Trader implements Listener {
     private int size = 18;
     private boolean isGun;
 
-    public Trader(DreamSpace plugin, Location loc, String label, String name, boolean ig) throws CloneNotSupportedException {
+    public Trader(DreamSpace plugin, Location loc, String label, String name) throws CloneNotSupportedException {
         this.plugin = plugin;
         this.location = loc;
-        isGun = ig;
         shop = Bukkit.createInventory(null, size, label);
-        setItems(shop, ig);
         npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
         npc.spawn(loc);
         System.out.println("Trader spawned at coordinates:" + loc);
-    }
-    private void setItems(Inventory inv, boolean flag) throws CloneNotSupportedException {
-        if(flag) {
-
-        }
     }
     @EventHandler
     public void click(NPCRightClickEvent event){
@@ -57,15 +50,15 @@ public class Trader implements Listener {
     @EventHandler
     public void oninventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
         if(e.getClickedInventory() != shop) return;
-        System.out.println(1231236169);
-        if(e.getCurrentItem() == null) return;
-        if(isGun){
-            if(e.getCurrentItem().getItemMeta().getCustomModelData() == 1161){
-
-            }else if(e.getCurrentItem().getItemMeta().getCustomModelData() == 1488){
-
-            }else if(e.getCurrentItem().getItemMeta().getCustomModelData() == 2222){            }
-        }
+        e.getWhoClicked().getInventory().addItem(e.getCursor());
         e.setCancelled(true);
+    }
+    @EventHandler
+    public void addItem(ItemStack i, int CustomModelData){
+        if (shop.getSize() < 18) return;
+        ItemMeta i_meta = i.getItemMeta();
+        i_meta.setCustomModelData(CustomModelData);
+        i.setItemMeta(i_meta);
+        shop.addItem(i);
     }
 }
