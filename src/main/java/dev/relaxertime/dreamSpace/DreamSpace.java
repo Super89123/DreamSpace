@@ -1,5 +1,7 @@
 package dev.relaxertime.dreamSpace;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DreamSpace extends JavaPlugin {
@@ -8,6 +10,13 @@ public final class DreamSpace extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
+    }
+
+    private ProtocolManager protocolManager;
+
+    @Override
+    public void onLoad() {
+        protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
     @Override
