@@ -6,9 +6,16 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import dev.relaxertime.dreamSpace.DreamSpace;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -16,107 +23,98 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Core extends PacketAdapter implements Listener {
+public class Core implements Listener, CommandExecutor {
 
     private final DreamSpace plugin;
     private final Map<UUID, Integer> hitCount = new HashMap<>();
-    private final Map<UUID, Integer> criticalCount = new HashMap<>();
-    private final Map<UUID, Entity> npcMap = new HashMap<>();
+    private final Map<UUID, Long> lastHitTime = new HashMap<>();
+
 
     public Core(DreamSpace plugin) {
-        super(plugin, PacketType.Play.Client.USE_ENTITY);
+
         this.plugin = plugin;
     }
 
-    @Override
-    public void onPacketReceiving(PacketEvent event) {
-        if (event.getPacketType() == PacketType.Play.Client.USE_ENTITY) {
-            Player player = event.getPlayer();
-            EnumWrappers.EntityUseAction action = event.getPacket().getEntityUseActions().read(0);
-
-            if (action == EnumWrappers.EntityUseAction.ATTACK) {
-                UUID playerId = player.getUniqueId();
-                hitCount.put(playerId, hitCount.getOrDefault(playerId, 0) + 1);
-
-                // Проверка на критический удар
-                if (player.getVelocity().getY() < -0.1) {
-                    criticalCount.put(playerId, criticalCount.getOrDefault(playerId, 0) + 1);
-                }
-
-                // Проверка на подозрительное поведение
-                if (hitCount.get(playerId) > 10 && criticalCount.getOrDefault(playerId, 0) > 5) {
-                    spawnNPC(player);
-                }
-            }
-        }
-    }
-
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        UUID playerId = event.getPlayer().getUniqueId();
-        hitCount.remove(playerId);
-        criticalCount.remove(playerId);
-        removeNPC(playerId);
-    }
-
-    @EventHandler
-    public void onEntityDamage(EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
             UUID playerId = player.getUniqueId();
 
-            if (npcMap.containsKey(playerId)) {
-                removeNPC(playerId);
+            // Проверка на критический удар
+            if (player.isSprinting() && player.getFallDistance() > 0.0F && !player.isOnGround()) {
+                hitCount.put(playerId, hitCount.getOrDefault(playerId, 0) + 1);
+                lastHitTime.put(playerId, System.currentTimeMillis());
+
+                // Если игрок совершил слишком много критических ударов за короткое время
+                if (hitCount.get(playerId) > 5) {
+                    player.sendMessage(ChatColor.RED + "Подозрительное поведение обнаружено!");
+                    createNPC(player);
+                    hitCount.put(playerId, 0); // Сброс счетчика
+                }
             }
         }
     }
 
-    private void spawnNPC(Player player) {
-        Location location = player.getLocation();
-        Player npc = (Player) player.getWorld().spawnEntity(location, EntityType.PLAYER);
-        npc.setCustomName(player.getName());
-        npc.setCustomNameVisible(true);
-        npc.setInvulnerable(true);
+    private void createNPC(Player player) {
+        NPCRegistry registry = CitizensAPI.getNPCRegistry();
+        NPC npc = registry.createNPC(EntityType.PLAYER, player.getName());
+        npc.spawn(player.getLocation());
 
-        // Случайная броня
-        npc.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));
-        npc.getInventory().setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-        npc.getInventory().setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-        npc.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
-
-        npcMap.put(player.getUniqueId(), npc);
-
-        // Вращение NPC вокруг игрока
+        // Запуск задачи для вращения NPC вокруг игрока
         new BukkitRunnable() {
+            double angle = 0;
+
             @Override
             public void run() {
-                if (!npcMap.containsKey(player.getUniqueId())) {
+                if (!npc.isSpawned()) {
                     this.cancel();
                     return;
                 }
 
                 Location loc = player.getLocation();
-                double angle = System.currentTimeMillis() / 1000.0;
-                double x = Math.cos(angle) * 2;
-                double z = Math.sin(angle) * 2;
-                npc.teleport(loc.add(x, 0, z));
+                double x = loc.getX() + 2 * Math.cos(angle);
+                double z = loc.getZ() + 2 * Math.sin(angle);
+                npc.teleport(new Location(loc.getWorld(), x, loc.getY(), z, loc.getYaw(), loc.getPitch()), PlayerTeleportEvent.TeleportCause.PLUGIN);
+
+                angle += Math.PI / 16;
+                if (angle >= 2 * Math.PI) {
+                    angle = 0;
+                }
             }
-        }.runTaskTimer(plugin, 0, 1);
+        }.runTaskTimer(plugin, 0L, 5L);
+
+        // Уничтожение NPC через 30 секунд
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (npc.isSpawned()) {
+                npc.destroy();
+                player.sendMessage(ChatColor.GREEN + "NPC был уничтожен.");
+            }
+        }, 20L * 30); // 30 секунд (20 тиков = 1 секунда)
     }
 
-    private void removeNPC(UUID playerId) {
-        if (npcMap.containsKey(playerId)) {
-            npcMap.get(playerId).remove();
-            npcMap.remove(playerId);
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("anticheat")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                player.sendMessage(ChatColor.GREEN + "Античит активирован!");
+                return true;
+            }
         }
+        return false;
     }
+
+
 }
