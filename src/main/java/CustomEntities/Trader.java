@@ -42,7 +42,7 @@ public class Trader implements Listener {
         setItems(shop, ig);
         npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
         npc.spawn(loc);
-
+        System.out.println("Trader spawned at coordinates:" + loc);
     }
     private void setItems(Inventory inv, boolean flag) throws CloneNotSupportedException {
         if(flag) {
