@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 public class Core implements Listener, CommandExecutor {
@@ -41,6 +42,7 @@ public class Core implements Listener, CommandExecutor {
     private final Map<UUID, Long> lastHitTime = new HashMap<>();
 
 
+
     public Core(DreamSpace plugin) {
 
         this.plugin = plugin;
@@ -48,21 +50,22 @@ public class Core implements Listener, CommandExecutor {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
+        if (event.getDamager() instanceof Player player) {
             UUID playerId = player.getUniqueId();
 
             // Проверка на критический удар
-            if (player.isSprinting() && player.getFallDistance() > 0.0F && !player.isOnGround()) {
+
                 hitCount.put(playerId, hitCount.getOrDefault(playerId, 0) + 1);
+
                 lastHitTime.put(playerId, System.currentTimeMillis());
+
 
                 // Если игрок совершил слишком много критических ударов за короткое время
                 if (hitCount.get(playerId) > 5) {
                     player.sendMessage(ChatColor.RED + "Подозрительное поведение обнаружено!");
                     createNPC(player);
-                    hitCount.put(playerId, 0); // Сброс счетчика
-                }
+                    hitCount.put(playerId, 0);
+
             }
         }
     }
@@ -71,6 +74,7 @@ public class Core implements Listener, CommandExecutor {
         NPCRegistry registry = CitizensAPI.getNPCRegistry();
         NPC npc = registry.createNPC(EntityType.PLAYER, player.getName());
         npc.spawn(player.getLocation());
+        npc.setFlyable(true);
 
         // Запуск задачи для вращения NPC вокруг игрока
         new BukkitRunnable() {
@@ -86,19 +90,24 @@ public class Core implements Listener, CommandExecutor {
                 Location loc = player.getLocation();
                 double x = loc.getX() + 2 * Math.cos(angle);
                 double z = loc.getZ() + 2 * Math.sin(angle);
-                npc.teleport(new Location(loc.getWorld(), x, loc.getY(), z, loc.getYaw(), loc.getPitch()), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                Random random = new Random();
+
+
+                double randomy = -2 + (random.nextDouble() * 4); //
+                npc.teleport(new Location(loc.getWorld(), x, loc.getY() + randomy, z, loc.getYaw(), loc.getPitch()), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
                 angle += Math.PI / 16;
                 if (angle >= 2 * Math.PI) {
                     angle = 0;
                 }
             }
-        }.runTaskTimer(plugin, 0L, 5L);
+        }.runTaskTimer(plugin, 0L, 1L);
 
         // Уничтожение NPC через 30 секунд
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (npc.isSpawned()) {
                 npc.destroy();
+
                 player.sendMessage(ChatColor.GREEN + "NPC был уничтожен.");
             }
         }, 20L * 30); // 30 секунд (20 тиков = 1 секунда)

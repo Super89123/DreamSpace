@@ -18,7 +18,7 @@ public final class DreamSpace extends JavaPlugin {
 
         // Регистрация слушателя событий
         getServer().getPluginManager().registerEvents(antiCheatListener, this);
-        Objects.requireNonNull(getServer().getPluginCommand("/ac")).setExecutor(new Core(this));
+        Objects.requireNonNull(getServer().getPluginCommand("ac")).setExecutor(new Core(this));
 
         // Plugin startup logic
 

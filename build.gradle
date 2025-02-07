@@ -39,12 +39,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') {
+    compileOnly('net.citizensnpcs:citizens-main:2.0.33-SNAPSHOT') {
         exclude group: '*', module: '*'
     }
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
 }
+
 
 def targetJavaVersion = 17
 java {
