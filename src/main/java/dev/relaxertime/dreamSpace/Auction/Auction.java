@@ -51,25 +51,37 @@ public class Auction implements CommandExecutor, Listener {
         ItemStack stack = OraxenItems.getItemById("null_icon").build();
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + "Выставить на настоящий аукцион");
+        stack.setItemMeta(meta);
         inventory.setItem(19, stack);
         inventory.setItem(20, stack);
         inventory.setItem(21, stack);
         inventory.setItem(28, stack);
         inventory.setItem(29, stack);
         inventory.setItem(30, stack);
+
+        inventory.setItem(23, stack);
+        inventory.setItem(24, stack);
+        inventory.setItem(25, stack);
+        inventory.setItem(32, stack);
+        inventory.setItem(33, stack);
+        inventory.setItem(34, stack);
         return inventory;
     }
     @EventHandler
     public void clickEventonVibor(InventoryClickEvent event){
-        if(!(event.getWhoClicked() instanceof Player player)) return;
-        if(Objects.equals(event.getClickedInventory(), getFirstSellInventory())){
+        if(!(event.getWhoClicked() instanceof Player)) return;
+        if(Objects.requireNonNull(event.getCurrentItem()).getItemMeta().getCustomModelData() == 10029){
             switch (event.getSlot()){
                 case 19,20,21,28,29,30:
-                    player.openInventory(getTrueSellInventory());
+                    event.getWhoClicked().openInventory(getTrueSellInventory());
+                    event.setCancelled(true);
+                case 23,24,25,32,33,34:
+                    event.getWhoClicked().openInventory(getSellInventory());
                     event.setCancelled(true);
 
             }
-
+            event.setCancelled(true);
+            //TODO Никит перепиши здесь проверку меню пж)))
         }
 
     }
@@ -79,5 +91,19 @@ public class Auction implements CommandExecutor, Listener {
             inventory.setItem(i,OraxenItems.getItemById("null_icon").build() );
         }
         return inventory;
+    }
+    public static Inventory getSellInventory(){
+        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.GREEN + "Сколько будет стоить?");
+        for(int i = 0; i < 54; i++){
+            inventory.setItem(i,OraxenItems.getItemById("null_icon").build() );
+        }
+        return inventory;
+    }
+    public static ItemStack buildEmptyStack(String name){
+        ItemStack stack = OraxenItems.getItemById("null_icon").build();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + name);
+        stack.setItemMeta(meta);
+        return stack;
     }
 }
