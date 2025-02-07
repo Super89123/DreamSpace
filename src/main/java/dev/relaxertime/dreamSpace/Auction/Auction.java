@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -22,6 +23,10 @@ import java.util.Objects;
 public class Auction implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if(strings.length < 1){
+            commandSender.sendMessage("/ah sell");
+            return true;
+        }
         if(commandSender instanceof Player player){
             if(strings[0].equalsIgnoreCase("sell")){
                 if(player.getInventory().getItemInMainHand().getType().equals(Material.AIR)){
@@ -38,11 +43,14 @@ public class Auction implements CommandExecutor, Listener {
         }
 
 
+
         return true;
     }
     public static Inventory getFirstSellInventory(){
         Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.RED + "Какой тип аукциона вы выберете?");
         ItemStack stack = OraxenItems.getItemById("null_icon").build();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + "Выставить на настоящий аукцион");
         inventory.setItem(19, stack);
         inventory.setItem(20, stack);
         inventory.setItem(21, stack);
