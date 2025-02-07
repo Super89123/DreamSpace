@@ -6,3 +6,5 @@ depend: [ ProtocolLib ]
 commands:
   ac:
     description: gfd
+  ah:
+    description: gdd
