@@ -52,9 +52,10 @@ public class Trader implements Listener {
         event.getClicker().openInventory(shop);
     }
     @EventHandler
-    public void oninventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
+    public void onInventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
         if(e.getClickedInventory() != shop) return;
-        ItemStack item = e.getCursor().clone();
+        if(e.getCurrentItem() == null) return;
+        ItemStack item = e.getCurrentItem().clone();
         ItemMeta item_meta = item.getItemMeta();
         item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
         item.setItemMeta(item_meta);
