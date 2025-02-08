@@ -23,31 +23,29 @@ import java.util.Objects;
 public class Auction implements CommandExecutor, Listener {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(strings.length < 1){
+        if (strings.length < 1) {
             commandSender.sendMessage("/ah sell");
             return true;
         }
-        if(commandSender instanceof Player player){
-            if(strings[0].equalsIgnoreCase("sell")){
-                if(player.getInventory().getItemInMainHand().getType().equals(Material.AIR)){
-                    player.sendMessage(ChatColor.RED+ "Предмет в руке не должен быть пустым!");
-                }
-                else {
+        if (commandSender instanceof Player player) {
+            if (strings[0].equalsIgnoreCase("sell")) {
+                if (player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
+                    player.sendMessage(ChatColor.RED + "Предмет в руке не должен быть пустым!");
+                } else {
                     player.openInventory(getFirstSellInventory());
                 }
                 return true;
             }
-        }
-        else {
+        } else {
             commandSender.sendMessage("Администраторам не следует это делать!");
         }
 
 
-
         return true;
     }
-    public static Inventory getFirstSellInventory(){
-        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.RED + "Какой тип аукциона вы выберете?");
+
+    public static Inventory getFirstSellInventory() {
+        Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.WHITE + "<shift:-5>猫");
         ItemStack stack = OraxenItems.getItemById("null_icon").build();
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(ChatColor.GREEN + "Выставить на настоящий аукцион");
@@ -58,33 +56,77 @@ public class Auction implements CommandExecutor, Listener {
         inventory.setItem(28, stack);
         inventory.setItem(29, stack);
         inventory.setItem(30, stack);
-
-        inventory.setItem(23, stack);
-        inventory.setItem(24, stack);
-        inventory.setItem(25, stack);
-        inventory.setItem(32, stack);
-        inventory.setItem(33, stack);
-        inventory.setItem(34, stack);
+        ItemStack stack1 = buildEmptyStack(ChatColor.GREEN + "Выставить на классический аукцион");
+        inventory.setItem(23, stack1);
+        inventory.setItem(24, stack1);
+        inventory.setItem(25, stack1);
+        inventory.setItem(32, stack1);
+        inventory.setItem(33, stack1);
+        inventory.setItem(34, stack1);
         return inventory;
     }
+
     @EventHandler
-    public void clickEventonVibor(InventoryClickEvent event){
-        if(!(event.getWhoClicked() instanceof Player)) return;
-        if(Objects.requireNonNull(event.getCurrentItem()).getItemMeta().getCustomModelData() == 10029){
-            switch (event.getSlot()){
-                case 19,20,21,28,29,30:
+    public void clickEventonVibor(InventoryClickEvent event) {
+        ItemStack pusto = OraxenItems.getItemById("null_icon").build();
+        if (!(event.getWhoClicked() instanceof Player)) return;
+        if (event.getInventory().equals(getFirstSellInventory())) {
+            switch (event.getSlot()) {
+                case 19, 20, 21, 28, 29, 30:
                     event.getWhoClicked().openInventory(getTrueSellInventory());
                     event.setCancelled(true);
-                case 23,24,25,32,33,34:
+                case 23, 24, 25, 32, 33, 34:
                     event.getWhoClicked().openInventory(getSellInventory());
                     event.setCancelled(true);
 
             }
             event.setCancelled(true);
-            //TODO Никит перепиши здесь проверку меню пж)))
+
+        } else if (event.getInventory().getItem(0) != null && Objects.requireNonNull(event.getInventory().getItem(0)).equals(pusto)) {
+            switch (event.getSlot()){
+                case 45,46:
+                    addToNumber(event.getInventory(), 1);
+                    event.setCancelled(true);
+                case 47,48:
+                    addToNumber(event.getInventory(), 2);
+                    event.setCancelled(true);
+                case 49,50:
+                    addToNumber(event.getInventory(), 3);
+                    event.setCancelled(true);
+                case 51,52:
+                    addToNumber(event.getInventory(), 0);
+                    event.setCancelled(true);
+                case 36,37:
+                    addToNumber(event.getInventory(), 4);
+                    event.setCancelled(true);
+                case 38,39:
+                    addToNumber(event.getInventory(), 5);
+                    event.setCancelled(true);
+                case 40,41:
+                    addToNumber(event.getInventory(), 6);
+                    event.setCancelled(true);
+                case 27,28:
+                    addToNumber(event.getInventory(), 7);
+                    event.setCancelled(true);
+                case 29,30:
+                    addToNumber(event.getInventory(), 8);
+                    event.setCancelled(true);
+                case 31,23:
+                    addToNumber(event.getInventory(), 9);
+                    event.setCancelled(true);
+
+
+
+
+
+
+            }
+
         }
 
     }
+
+
     public static Inventory getTrueSellInventory(){
         Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.GREEN + "Сколько будет стоить?");
         for(int i = 0; i < 54; i++){
@@ -105,5 +147,282 @@ public class Auction implements CommandExecutor, Listener {
         meta.setDisplayName(ChatColor.GREEN + name);
         stack.setItemMeta(meta);
         return stack;
+    }
+    private void addToNumber(Inventory inventory, int number){
+        ItemStack cifra1 = OraxenItems.getItemById("cifra1").build();
+        ItemStack cifra2 = OraxenItems.getItemById("cifra2").build();
+        ItemStack cifra3 = OraxenItems.getItemById("cifra3").build();
+        ItemStack cifra4 = OraxenItems.getItemById("cifra4").build();
+        ItemStack cifra5 = OraxenItems.getItemById("cifra5").build();
+        ItemStack cifra6 = OraxenItems.getItemById("cifra6").build();
+        ItemStack cifra7 = OraxenItems.getItemById("cifra7").build();
+        ItemStack cifra8 = OraxenItems.getItemById("cifra8").build();
+        ItemStack cifra9 = OraxenItems.getItemById("cifra9").build();
+        ItemStack cifra0 = OraxenItems.getItemById("cifra0").build();
+        ItemStack pusto = OraxenItems.getItemById("null_icon").build();
+        if(Objects.requireNonNull(inventory.getItem(17)).equals(pusto )) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(17, cifra1);
+                    return;
+                case 2:
+                    inventory.setItem(17, cifra2);
+                    return;
+                case 3:
+                    inventory.setItem(17, cifra3);
+                    return;
+                case 4:
+                    inventory.setItem(17, cifra4);
+                    return;
+                case 5:
+                    inventory.setItem(17, cifra5);
+                    return;
+                case 6:
+                    inventory.setItem(17, cifra6);
+                    return;
+                case 7:
+                    inventory.setItem(17, cifra7);
+                    return;
+                case 8:
+                    inventory.setItem(17, cifra8);
+                    return;
+                case 9:
+                    inventory.setItem(17, cifra9);
+                    return;
+                case 0:
+                    inventory.setItem(17, cifra0);
+                    return;
+            }
+            return;
+        } else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(16, cifra1);
+                    return;
+                case 2:
+                    inventory.setItem(16, cifra2);
+                    return;
+                case 3:
+                    inventory.setItem(16, cifra3);
+                    return;
+                case 4:
+                    inventory.setItem(16, cifra4);
+                    return;
+                case 5:
+                    inventory.setItem(16, cifra5);
+                    return;
+                case 6:
+                    inventory.setItem(16, cifra6);
+                    return;
+                case 7:
+                    inventory.setItem(16, cifra7);
+                    return;
+                case 8:
+                    inventory.setItem(16, cifra8);
+                    return;
+                case 9:
+                    inventory.setItem(16, cifra9);
+                    return;
+                case 0:
+                    inventory.setItem(16, cifra0);
+                    return;
+            }
+
+        }else if (Objects.requireNonNull(inventory.getItem(15)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(15, cifra1);
+                    return;
+                case 2:
+                    inventory.setItem(15, cifra2);  return;
+                case 3:
+                    inventory.setItem(15, cifra3);
+                    return;
+                case 4:
+                    inventory.setItem(15, cifra4);
+                    return;
+                case 5:
+                    inventory.setItem(15, cifra5);
+                    return;
+                case 6:
+                    inventory.setItem(15, cifra6);
+                    return;
+                case 7:
+                    inventory.setItem(15, cifra7);
+                    return;
+                case 8:
+                    inventory.setItem(15, cifra8);
+                    return;
+                case 9:
+                    inventory.setItem(15, cifra9);
+                    return;
+                case 0:
+                    inventory.setItem(15, cifra0);
+                    return;
+            }
+            return;
+
+        }
+        else if (Objects.requireNonNull(inventory.getItem(14)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(14, cifra1);
+                    return;
+                case 2:
+                    inventory.setItem(14, cifra2);
+                    return;
+                case 3:
+                    inventory.setItem(14, cifra3);
+                    return;
+                case 4:
+                    inventory.setItem(14, cifra4);
+                    return;
+                case 5:
+                    inventory.setItem(14, cifra5);
+                    return;
+                case 6:
+                    inventory.setItem(14, cifra6);
+                    return;
+                case 7:
+                    inventory.setItem(14, cifra7);
+                    return;
+                case 8:
+                    inventory.setItem(14, cifra8);
+                    return;
+                case 9:
+                    inventory.setItem(14, cifra9);
+                    return;
+                case 0:
+                    inventory.setItem(14, cifra0);
+                    return;
+            }
+
+        }else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(13, cifra1);
+                    return;
+                case 2:
+                    inventory.setItem(13, cifra2);
+                    return;
+                case 3:
+                    inventory.setItem(13, cifra3);  return;
+                case 4:
+                    inventory.setItem(13, cifra4);  return;
+                case 5:
+                    inventory.setItem(13, cifra5);  return;
+                case 6:
+                    inventory.setItem(13, cifra6);  return;
+                case 7:
+                    inventory.setItem(13, cifra7);  return;
+                case 8:
+                    inventory.setItem(13, cifra8);  return;
+                case 9:
+                    inventory.setItem(13, cifra9);  return;
+                case 0:
+                    inventory.setItem(13, cifra0);  return;
+            }
+
+        }
+        else if (Objects.requireNonNull(inventory.getItem(12)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(12, cifra1);  return;
+                case 2:
+                    inventory.setItem(12, cifra2);  return;
+                case 3:
+                    inventory.setItem(12, cifra3);  return;
+                case 4:
+                    inventory.setItem(12, cifra4);  return;
+                case 5:
+                    inventory.setItem(12, cifra5);  return;
+                case 6:
+                    inventory.setItem(12, cifra6);  return;
+                case 7:
+                    inventory.setItem(12, cifra7);  return;
+                case 8:
+                    inventory.setItem(12, cifra8);  return;
+                case 9:
+                    inventory.setItem(12, cifra9);  return;
+                case 0:
+                    inventory.setItem(12, cifra0);  return;
+            }
+        }else if (Objects.requireNonNull(inventory.getItem(11)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(11, cifra1);  return;
+                case 2:
+                    inventory.setItem(11, cifra2);  return;
+                case 3:
+                    inventory.setItem(11, cifra3);  return;
+                case 4:
+                    inventory.setItem(11, cifra4);  return;
+                case 5:
+                    inventory.setItem(11, cifra5);  return;
+                case 6:
+                    inventory.setItem(11, cifra6);  return;
+                case 7:
+                    inventory.setItem(11, cifra7);  return;
+                case 8:
+                    inventory.setItem(11, cifra8);  return;
+                case 9:
+                    inventory.setItem(11, cifra9);  return;
+                case 0:
+                    inventory.setItem(11, cifra0);  return;
+            }
+
+        }else if (Objects.requireNonNull(inventory.getItem(10)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(10, cifra1);  return;
+                case 2:
+                    inventory.setItem(10, cifra2);  return;
+                case 3:
+                    inventory.setItem(10, cifra3);  return;
+                case 4:
+                    inventory.setItem(10, cifra4);  return;
+                case 5:
+                    inventory.setItem(10, cifra5);  return;
+                case 6:
+                    inventory.setItem(10, cifra6);  return;
+                case 7:
+                    inventory.setItem(10, cifra7);  return;
+                case 8:
+                    inventory.setItem(10, cifra8);  return;
+                case 9:
+                    inventory.setItem(10, cifra9);  return;
+                case 0:
+                    inventory.setItem(10, cifra0);  return;
+            }
+
+        }
+        else if (Objects.requireNonNull(inventory.getItem(9)).equals(pusto)) {
+            switch (number) {
+                case 1:
+                    inventory.setItem(9, cifra1);  return;
+                case 2:
+                    inventory.setItem(9, cifra2);  return;
+                case 3:
+                    inventory.setItem(9, cifra3);  return;
+                case 4:
+                    inventory.setItem(9, cifra4);  return;
+                case 5:
+                    inventory.setItem(9, cifra5);  return;
+                case 6:
+                    inventory.setItem(9, cifra6);  return;
+                case 7:
+                    inventory.setItem(9, cifra7);  return;
+                case 8:
+                    inventory.setItem(9, cifra8);  return;
+                case 9:
+                    inventory.setItem(9, cifra9);  return;
+                case 0:
+                    inventory.setItem(9, cifra0);  return;
+            }
+
+        }
+
+
+
     }
 }
