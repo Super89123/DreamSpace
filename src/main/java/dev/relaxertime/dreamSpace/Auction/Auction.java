@@ -73,6 +73,7 @@ public class Auction implements CommandExecutor, Listener {
         meta.setDisplayName(ChatColor.GREEN + "Выставить на настоящий аукцион");
         stack.setItemMeta(meta);
         ItemStack pusto = OraxenItems.getItemById("null_icon").build();
+        if(event.getInventory().getSize() != 54) return;
         if (!(event.getWhoClicked() instanceof Player)) return;
         if (event.getInventory().getItem(19) != null && Objects.requireNonNull(event.getInventory().getItem(19)).equals(stack)) {
             switch (event.getSlot()) {
