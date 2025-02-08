@@ -77,14 +77,16 @@ public class Core implements Listener {
                     hitCount.put(playerId, 0);
                 }
             }
-            NPC npf = playerNPCs.get(playerId);
-            if(event.getEntity().equals(npf.getEntity())){
-                if(!zav.containsKey(playerId)){
-                    zav.put(playerId, 0);
-                }
-                zav.put(playerId, zav.get(playerId) +1);
-                if(zav.get(playerId) > 10){
-                    sendTelegramMessage("Обноружен Нарушитель! \n  Ник: " + player.getName() + "UUID: " + playerId + "\n  + Сервер: DreamScape" +"Время: "+ LocalTime.now());
+            if(playerNPCs.containsKey(playerId)) {
+                NPC npf = playerNPCs.get(playerId);
+                if (event.getEntity().equals(npf.getEntity())) {
+                    if (!zav.containsKey(playerId)) {
+                        zav.put(playerId, 0);
+                    }
+                    zav.put(playerId, zav.get(playerId) + 1);
+                    if (zav.get(playerId) > 10) {
+                        sendTelegramMessage("Обноружен Нарушитель! Ник: " + player.getName() + "UUID: " + playerId + "  + Сервер: DreamScape" + "Время: " + LocalTime.now());
+                    }
                 }
             }
         }
