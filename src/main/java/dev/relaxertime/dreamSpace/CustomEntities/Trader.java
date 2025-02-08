@@ -63,7 +63,9 @@ public class Trader implements Listener {
             System.out.println();
             e.getWhoClicked().getInventory().addItem(item);
             e.setCancelled(true);
-        } catch (IndexOutOfBoundsException ignored){}
+        } catch (IndexOutOfBoundsException ignored){
+            System.out.println("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK");
+        }
 
 
 
@@ -72,7 +74,7 @@ public class Trader implements Listener {
     public void addItem(ItemStack i, int CustomModelData, String price, String description_){
         if (shop.getSize() < 18) return;
         ItemMeta i_meta = i.getItemMeta();
-        Component description = text("Цена: ").color(color(0x006666)).append(text(price, color(0x0099CC00)));
+        Component description = text("Цена: ").color(color(26214)).append(text(price, color(0x0099CC00)));
         i_meta.lore(Collections.singletonList(description));
         i_meta.setCustomModelData(CustomModelData);
         i.setItemMeta(i_meta);
