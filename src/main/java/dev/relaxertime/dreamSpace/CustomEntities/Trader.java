@@ -78,7 +78,9 @@ public class Trader implements Listener {
         shop.addItem(i);
         Component new_description = text("");
         for (String j : description_.split("/")){
+            System.out.println(j);
             String[] desc_arr = j.split(";");
+            System.out.println(Arrays.toString(desc_arr));
             new_description.append(text(desc_arr[0]).color(color(Integer.decode(desc_arr[1]))));
         }
         descriptoin_map.put(CustomModelData, new_description);
