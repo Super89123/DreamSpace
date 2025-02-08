@@ -30,12 +30,12 @@ public class Core implements Listener {
     private final DreamSpace plugin;
     private final Map<UUID, Integer> hitCount = new HashMap<>();
     private final Map<UUID, Long> lastHitTime = new HashMap<>();
-    private final Map<UUID, NPC> playerNPCs = new HashMap<>(); // Хранение NPC для каждого игрока
+    private final Map<UUID, NPC> playerNPCs = new HashMap<>();
 
     public Core(DreamSpace plugin) {
         this.plugin = plugin;
 
-        // Регистрация обработчика пакетов для скрытия NPC от других игроков
+
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.SPAWN_ENTITY_LIVING, PacketType.Play.Server.ENTITY_METADATA) {
             @Override
             public void onPacketSending(PacketEvent event) {
@@ -45,7 +45,7 @@ public class Core implements Listener {
                         if (entry.getValue().getEntity().getEntityId() == entityId) {
                             Player player = event.getPlayer();
                             if (!player.getUniqueId().equals(entry.getKey())) {
-                                event.setCancelled(true); // Скрываем NPC от других игроков
+                                event.setCancelled(true);
                             }
                         }
                     }
@@ -62,15 +62,13 @@ public class Core implements Listener {
             hitCount.put(playerId, hitCount.getOrDefault(playerId, 0) + 1);
             lastHitTime.put(playerId, System.currentTimeMillis());
 
-            // Если игрок совершил слишком много ударов за короткое время
+
             if (hitCount.get(playerId) > 5) {
-                // Проверяем, есть ли уже NPC для этого игрока
+
                 if (!playerNPCs.containsKey(playerId)) {
                     player.sendMessage(ChatColor.RED + "Подозрительное поведение обнаружено!");
                     createNPC(player);
-                    hitCount.put(playerId, 0); // Сбрасываем счетчик ударов
-                } else {
-                    player.sendMessage(ChatColor.YELLOW + "Вы уже проверяетесь!");
+                    hitCount.put(playerId, 0);
                 }
             }
         }
@@ -82,10 +80,10 @@ public class Core implements Listener {
         npc.spawn(player.getLocation());
         npc.setFlyable(true);
 
-        // Сохраняем NPC для игрока
+
         playerNPCs.put(player.getUniqueId(), npc);
 
-        // Запуск задачи для вращения NPC вокруг игрока
+
         new BukkitRunnable() {
             double angle = 0;
 
@@ -111,13 +109,13 @@ public class Core implements Listener {
             }
         }.runTaskTimer(plugin, 0L, 1L);
 
-        // Уничтожение NPC через 30 секунд
+
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (npc.isSpawned()) {
                 npc.destroy();
-                playerNPCs.remove(player.getUniqueId()); // Удаляем NPC из списка
+                playerNPCs.remove(player.getUniqueId());
                 player.sendMessage(ChatColor.GREEN + "NPC был уничтожен.");
             }
-        }, 20L * 30); // 30 секунд (20 тиков = 1 секунда)
+        }, 20L * 30);
     }
 }
