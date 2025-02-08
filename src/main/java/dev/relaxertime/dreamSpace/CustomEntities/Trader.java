@@ -60,6 +60,7 @@ public class Trader implements Listener {
             ItemMeta item_meta = item.getItemMeta();
             item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
             item.setItemMeta(item_meta);
+            System.out.println();
             e.getWhoClicked().getInventory().addItem(item);
             e.setCancelled(true);
         } catch (IndexOutOfBoundsException ignored){}
@@ -80,8 +81,8 @@ public class Trader implements Listener {
         for (String j : description_.split("/")){
             System.out.println(j);
             String[] desc_arr = j.split(";");
-            System.out.println(Arrays.toString(desc_arr));
-            new_description.append(text(desc_arr[0]).color(color(Integer.decode(desc_arr[1]))));
+            System.out.println(Integer.decode(desc_arr[1]));
+            new_description.append(text(desc_arr[0], color(Integer.decode(desc_arr[1]))));
         }
         descriptoin_map.put(CustomModelData, new_description);
     }
