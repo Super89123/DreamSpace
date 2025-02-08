@@ -1,10 +1,16 @@
-package dev.relaxertime.dreamSpace.Auction;
+package com.example.regionauction;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,123 +19,279 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;// пись
+import java.util.Map;
+import java.util.UUID;
 
-public class Gleb implements CommandExecutor, Listener {
+public class RegionAuction extends JavaPlugin implements Listener {
 
-    private final Map<String, RegionData> regionDataMap = new HashMap<>();
+    private Map<String, RegionData> regionDataMap = new HashMap<>();
+    private Map<UUID, String> pendingPurchases = new HashMap<>();
+    private Economy economy;
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 2 || !args[0].equalsIgnoreCase("arend")) {
-            sender.sendMessage(ChatColor.RED + "Используйте: /arend [название региона]");
-            return true;
+    public void onEnable() {
+        // Инициализация экономики
+        if (!setupEconomy()) {
+            getLogger().severe("Vault не найден! Плагин отключен.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
-        if (sender instanceof Player player) {
-            String regionName = args[1];
-            // Проверка существования региона (должен быть реализован)
-            if (!regionExists(regionName)) {
-                player.sendMessage(ChatColor.RED + "Регион с таким именем не найден.");
-                return true;
-            }
+        // Загрузка данных
+        regionDataMap = DataManager.loadData();
+        getLogger().info("Данные загружены: " + regionDataMap.size() + " регионов.");
 
-            // Открываем меню аренды
-            player.openInventory(getRentMenu(regionName));
-            return true;
-        }
+        // Регистрация событий
+        getServer().getPluginManager().registerEvents(this, this);
 
-        sender.sendMessage("Эта команда доступна только игрокам.");
-        return true;
+        // Регистрация команд
+        getCommand("arend").setExecutor(this);
+        getCommand("aharend").setExecutor(this);
+        getCommand("buyregion").setExecutor(this);
+        getCommand("rentregion").setExecutor(this);
     }
 
-    private Inventory getRentMenu(String regionName) {
-        Inventory inventory = Bukkit.createInventory(null, 27, ChatColor.GREEN + "Настройки аренды региона: " + regionName);
+    @Override
+    public void onDisable() {
+        // Сохранение данных
+        DataManager.saveData(regionDataMap);
+        getLogger().info("Данные сохранены.");
+    }
 
-        // Кнопка для установки времени аренды
-        ItemStack timeItem = new ItemStack(Material.CLOCK);
-        ItemMeta timeMeta = timeItem.getItemMeta();
-        timeMeta.setDisplayName(ChatColor.YELLOW + "Установить время аренды");
-        timeItem.setItemMeta(timeMeta);
-        inventory.setItem(11, timeItem);
+    private boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+        economy = rsp.getProvider();
+        return economy != null;
+    }
 
-        // Кнопка для установки цены
-        ItemStack priceItem = new ItemStack(Material.GOLD_INGOT);
-        ItemMeta priceMeta = priceItem.getItemMeta();
-        priceMeta.setDisplayName(ChatColor.GREEN + "Установить цену аренды");
-        priceItem.setItemMeta(priceMeta);
-        inventory.setItem(13, priceItem);
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("arend")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                if (args.length == 1) {
+                    String regionName = args[0];
+                    openRegionMenu(player, regionName);
+                    return true;
+                }
+            }
+        } else if (command.getName().equalsIgnoreCase("aharend")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                openAuctionMenu(player);
+                return true;
+            }
+        } else if (command.getName().equalsIgnoreCase("buyregion")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                handleBuyRegion(player);
+                return true;
+            }
+        } else if (command.getName().equalsIgnoreCase("rentregion")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                handleRentRegion(player);
+                return true;
+            }
+        }
+        return false;
+    }
 
-        // Кнопка для установки прав
-        ItemStack rightsItem = new ItemStack(Material.BOOK);
-        ItemMeta rightsMeta = rightsItem.getItemMeta();
-        rightsMeta.setDisplayName(ChatColor.BLUE + "Настроить права");
-        rightsItem.setItemMeta(rightsMeta);
-        inventory.setItem(15, rightsItem);
+    private void openRegionMenu(Player player, String regionName) {
+        Inventory menu = Bukkit.createInventory(player, 9, "Настройки региона: " + regionName);
 
-        // Кнопка для выставления на продажу
-        ItemStack sellItem = new ItemStack(Material.DIAMOND);
-        ItemMeta sellMeta = sellItem.getItemMeta();
-        sellMeta.setDisplayName(ChatColor.GOLD + "Выставить на продажу");
-        sellItem.setItemMeta(sellMeta);
-        inventory.setItem(26, sellItem);
+        ItemStack timeSetting = new ItemStack(Material.CLOCK);
+        ItemMeta timeMeta = timeSetting.getItemMeta();
+        timeMeta.setDisplayName("Установить время аренды");
+        timeSetting.setItemMeta(timeMeta);
+        menu.setItem(0, timeSetting);
 
-        return inventory;
+        ItemStack priceSetting = new ItemStack(Material.GOLD_INGOT);
+        ItemMeta priceMeta = priceSetting.getItemMeta();
+        priceMeta.setDisplayName("Установить цену");
+        priceSetting.setItemMeta(priceMeta);
+        menu.setItem(1, priceSetting);
+
+        ItemStack permissionsSetting = new ItemStack(Material.BOOK);
+        ItemMeta permissionsMeta = permissionsSetting.getItemMeta();
+        permissionsMeta.setDisplayName("Настроить права");
+        permissionsSetting.setItemMeta(permissionsMeta);
+        menu.setItem(2, permissionsSetting);
+
+        ItemStack sellRegion = new ItemStack(Material.EMERALD);
+        ItemMeta sellMeta = sellRegion.getItemMeta();
+        sellMeta.setDisplayName("Выставить на продажу");
+        sellRegion.setItemMeta(sellMeta);
+        menu.setItem(8, sellRegion);
+
+        player.openInventory(menu);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().startsWith(ChatColor.GREEN + "Настройки аренды региона: ")) {
-            event.setCancelled(true); // Отменяем событие, чтобы не закрыть инвентарь
-
+        if (event.getView().getTitle().startsWith("Настройки региона:")) {
+            event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
-            String regionName = event.getView().getTitle().substring(ChatColor.GREEN.toString().length() + "Настройки аренды региона: ".length());
+            ItemStack clickedItem = event.getCurrentItem();
 
-            if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR) return;
+            if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
-            switch (event.getCurrentItem().getType()) {
+            String regionName = event.getView().getTitle().replace("Настройки региона: ", "");
+
+            switch (clickedItem.getType()) {
                 case CLOCK:
+                    player.sendMessage(ChatColor.GREEN + "Установите время аренды.");
                     // Логика для установки времени аренды
-                    player.sendMessage(ChatColor.YELLOW + "Введите время аренды в чате.");
-                    // Здесь можно добавить логику для получения времени от игрока
                     break;
                 case GOLD_INGOT:
-                    // Логика для установки цены аренды
-                    player.sendMessage(ChatColor.GREEN + "Введите цену аренды в чате.");
-                    // Здесь можно добавить логику для получения цены от игрока
+                    player.sendMessage(ChatColor.GREEN + "Установите цену.");
+                    // Логика для установки цены
                     break;
                 case BOOK:
+                    player.sendMessage(ChatColor.GREEN + "Настройте права.");
                     // Логика для настройки прав
-                    player.sendMessage(ChatColor.BLUE + "Выберите права для арендатора.");
-                    // Здесь можно добавить логику для выбора прав
                     break;
-                case DIAMOND:
-                    // Логика для выставления на продажу
-                    player.sendMessage(ChatColor.GOLD + "Регион выставлен на продажу.");
-                    // Здесь можно добавить логику для выставления региона на продажу
+                case EMERALD:
+                    regionDataMap.put(regionName, new RegionData(regionName, player.getUniqueId()));
+                    player.sendMessage(ChatColor.GREEN + "Регион " + regionName + " выставлен на продажу.");
                     break;
+            }
+        } else if (event.getView().getTitle().equals("Аукцион регионов")) {
+            event.setCancelled(true);
+            Player player = (Player) event.getWhoClicked();
+            ItemStack clickedItem = event.getCurrentItem();
+
+            if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+
+            String regionName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
+            RegionData regionData = regionDataMap.get(regionName);
+
+            if (regionData != null) {
+                pendingPurchases.put(player.getUniqueId(), regionName);
+                player.sendMessage(ChatColor.GREEN + "Вы хотите купить или арендовать регион " + regionName + "?");
+                player.sendMessage(ChatColor.GREEN + "Используйте команду /buyregion для покупки или /rentregion для аренды.");
             }
         }
     }
 
-    private boolean regionExists(String regionName) {
-        // Здесь должна быть логика проверки существования региона
-        return true; // Замените на реальную проверку
+    private void openAuctionMenu(Player player) {
+        Inventory auctionMenu = Bukkit.createInventory(player, 27, "Аукцион регионов");
+
+        for (Map.Entry<String, RegionData> entry : regionDataMap.entrySet()) {
+            ItemStack regionItem = new ItemStack(Material.GRASS_BLOCK);
+            ItemMeta meta = regionItem.getItemMeta();
+            meta.setDisplayName(ChatColor.GREEN + entry.getKey());
+            regionItem.setItemMeta(meta);
+            auctionMenu.addItem(regionItem);
+        }
+
+        player.openInventory(auctionMenu);
     }
 
-    // Класс для хранения данных региона
+    private void handleBuyRegion(Player player) {
+        UUID playerId = player.getUniqueId();
+        if (pendingPurchases.containsKey(playerId)) {
+            String regionName = pendingPurchases.get(playerId);
+            RegionData regionData = regionDataMap.get(regionName);
+            if (regionData != null) {
+                double price = regionData.getPrice();
+                if (economy.has(player, price)) {
+                    economy.withdrawPlayer(player, price);
+                    economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
+                    player.sendMessage(ChatColor.GREEN + "Вы купили регион " + regionName + "!");
+                    regionDataMap.remove(regionName);
+                    pendingPurchases.remove(playerId);
+                } else {
+                    player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
+                }
+            }
+        } else {
+            player.sendMessage(ChatColor.RED + "У вас нет активной покупки региона.");
+        }
+    }
+
+    private void handleRentRegion(Player player) {
+        UUID playerId = player.getUniqueId();
+        if (pendingPurchases.containsKey(playerId)) {
+            String regionName = pendingPurchases.get(playerId);
+            RegionData regionData = regionDataMap.get(regionName);
+            if (regionData != null) {
+                double price = regionData.getRentPrice();
+                if (economy.has(player, price)) {
+                    economy.withdrawPlayer(player, price);
+                    economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
+                    player.sendMessage(ChatColor.GREEN + "Вы арендовали регион " + regionName + "!");
+                    pendingPurchases.remove(playerId);
+                } else {
+                    player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
+                }
+            }
+        } else {
+            player.sendMessage(ChatColor.RED + "У вас нет активной аренды региона.");
+        }
+    }
+
     private static class RegionData {
-        private String owner;
+        private final String regionName;
+        private final UUID ownerId;
         private double price;
-        private int rentalTime;
-        private boolean canOpenChests;
+        private double rentPrice;
+        private long rentTime;
         private boolean canBreakBlocks;
+        private boolean canOpenChests;
         private boolean canOpenDoors;
         private boolean canUseMechanisms;
 
-        // Конструктор и геттеры/сеттеры
+        public RegionData(String regionName, UUID ownerId) {
+            this.regionName = regionName;
+            this.ownerId = ownerId;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public double getRentPrice() {
+            return rentPrice;
+        }
+
+        public UUID getOwnerId() {
+            return ownerId;
+        }
+    }
+
+    private static class DataManager {
+        private static final Gson gson = new Gson();
+        private static final File dataFile = new File("plugins/RegionAuction/data.json");
+
+        public static void saveData(Map<String, RegionData> data) {
+            try (FileWriter writer = new FileWriter(dataFile)) {
+                gson.toJson(data, writer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public static Map<String, RegionData> loadData() {
+            if (!dataFile.exists()) return new HashMap<>();
+
+            try (FileReader reader = new FileReader(dataFile)) {
+                Type type = new TypeToken<Map<String, RegionData>>() {}.getType();
+                return gson.fromJson(reader, type);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new HashMap<>();
+            }
+        }
     }
 }
