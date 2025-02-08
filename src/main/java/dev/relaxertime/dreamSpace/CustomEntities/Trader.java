@@ -70,7 +70,7 @@ public class Trader implements Listener {
         i_meta.setCustomModelData(CustomModelData);
         i.setItemMeta(i_meta);
         shop.addItem(i);
-        Component new_description = null;
+        Component new_description = text("");
         for (String j : description_.split("/")){
             String[] desc_arr = j.split(";");
             new_description.append(text(desc_arr[0]).color(color(Integer.decode(desc_arr[1]))));
