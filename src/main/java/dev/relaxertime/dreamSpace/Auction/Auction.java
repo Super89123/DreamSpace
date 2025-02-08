@@ -169,260 +169,260 @@ public class Auction implements CommandExecutor, Listener {
             switch (number) {
                 case 1:
                     inventory.setItem(17, cifra1);
-                    return;
+
                 case 2:
                     inventory.setItem(17, cifra2);
-                    return;
+
                 case 3:
                     inventory.setItem(17, cifra3);
-                    return;
+
                 case 4:
                     inventory.setItem(17, cifra4);
-                    return;
+
                 case 5:
                     inventory.setItem(17, cifra5);
-                    return;
+
                 case 6:
                     inventory.setItem(17, cifra6);
-                    return;
+
                 case 7:
                     inventory.setItem(17, cifra7);
-                    return;
+
                 case 8:
                     inventory.setItem(17, cifra8);
-                    return;
+
                 case 9:
                     inventory.setItem(17, cifra9);
-                    return;
+
                 case 0:
                     inventory.setItem(17, cifra0);
-                    return;
+
             }
-            return;
+
         } else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(16, cifra1);
-                    return;
+
                 case 2:
                     inventory.setItem(16, cifra2);
-                    return;
+
                 case 3:
                     inventory.setItem(16, cifra3);
-                    return;
+
                 case 4:
                     inventory.setItem(16, cifra4);
-                    return;
+
                 case 5:
                     inventory.setItem(16, cifra5);
-                    return;
+
                 case 6:
                     inventory.setItem(16, cifra6);
-                    return;
+
                 case 7:
                     inventory.setItem(16, cifra7);
-                    return;
+
                 case 8:
                     inventory.setItem(16, cifra8);
-                    return;
+
                 case 9:
                     inventory.setItem(16, cifra9);
-                    return;
+
                 case 0:
                     inventory.setItem(16, cifra0);
-                    return;
+
             }
 
         }else if (Objects.requireNonNull(inventory.getItem(15)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(16), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(15, cifra1);
-                    return;
+
                 case 2:
-                    inventory.setItem(15, cifra2);  return;
+                    inventory.setItem(15, cifra2);
                 case 3:
                     inventory.setItem(15, cifra3);
-                    return;
+
                 case 4:
                     inventory.setItem(15, cifra4);
-                    return;
+
                 case 5:
                     inventory.setItem(15, cifra5);
-                    return;
+
                 case 6:
                     inventory.setItem(15, cifra6);
-                    return;
+
                 case 7:
                     inventory.setItem(15, cifra7);
-                    return;
+
                 case 8:
                     inventory.setItem(15, cifra8);
-                    return;
+
                 case 9:
                     inventory.setItem(15, cifra9);
-                    return;
+
                 case 0:
                     inventory.setItem(15, cifra0);
-                    return;
+
             }
-            return;
+
 
         }
         else if (Objects.requireNonNull(inventory.getItem(14)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(15), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(14, cifra1);
-                    return;
+
                 case 2:
                     inventory.setItem(14, cifra2);
-                    return;
+
                 case 3:
                     inventory.setItem(14, cifra3);
-                    return;
+
                 case 4:
                     inventory.setItem(14, cifra4);
-                    return;
+
                 case 5:
                     inventory.setItem(14, cifra5);
-                    return;
+
                 case 6:
                     inventory.setItem(14, cifra6);
-                    return;
+
                 case 7:
                     inventory.setItem(14, cifra7);
-                    return;
+
                 case 8:
                     inventory.setItem(14, cifra8);
-                    return;
+
                 case 9:
                     inventory.setItem(14, cifra9);
-                    return;
+
                 case 0:
                     inventory.setItem(14, cifra0);
-                    return;
+
             }
 
-        }else if (Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
+        } else if (Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(13, cifra1);
-                    return;
+
                 case 2:
                     inventory.setItem(13, cifra2);
-                    return;
+
                 case 3:
-                    inventory.setItem(13, cifra3);  return;
+                    inventory.setItem(13, cifra3);
                 case 4:
-                    inventory.setItem(13, cifra4);  return;
+                    inventory.setItem(13, cifra4);
                 case 5:
-                    inventory.setItem(13, cifra5);  return;
+                    inventory.setItem(13, cifra5);
                 case 6:
-                    inventory.setItem(13, cifra6);  return;
+                    inventory.setItem(13, cifra6);
                 case 7:
-                    inventory.setItem(13, cifra7);  return;
+                    inventory.setItem(13, cifra7);
                 case 8:
-                    inventory.setItem(13, cifra8);  return;
+                    inventory.setItem(13, cifra8);
                 case 9:
-                    inventory.setItem(13, cifra9);  return;
+                    inventory.setItem(13, cifra9);
                 case 0:
-                    inventory.setItem(13, cifra0);  return;
+                    inventory.setItem(13, cifra0);
             }
 
         }
-        else if (Objects.requireNonNull(inventory.getItem(12)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
+         else if (Objects.requireNonNull(inventory.getItem(12)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
-                    inventory.setItem(12, cifra1);  return;
+                    inventory.setItem(12, cifra1);
                 case 2:
-                    inventory.setItem(12, cifra2);  return;
+                    inventory.setItem(12, cifra2);
                 case 3:
-                    inventory.setItem(12, cifra3);  return;
+                    inventory.setItem(12, cifra3);
                 case 4:
-                    inventory.setItem(12, cifra4);  return;
+                    inventory.setItem(12, cifra4);
                 case 5:
-                    inventory.setItem(12, cifra5);  return;
+                    inventory.setItem(12, cifra5);
                 case 6:
-                    inventory.setItem(12, cifra6);  return;
+                    inventory.setItem(12, cifra6);
                 case 7:
-                    inventory.setItem(12, cifra7);  return;
+                    inventory.setItem(12, cifra7);
                 case 8:
-                    inventory.setItem(12, cifra8);  return;
+                    inventory.setItem(12, cifra8);
                 case 9:
-                    inventory.setItem(12, cifra9);  return;
+                    inventory.setItem(12, cifra9);
                 case 0:
-                    inventory.setItem(12, cifra0);  return;
+                    inventory.setItem(12, cifra0);
             }
-        }else if (Objects.requireNonNull(inventory.getItem(11)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(12), pusto)) {
+        } else if (Objects.requireNonNull(inventory.getItem(11)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(12), pusto)) {
             switch (number) {
                 case 1:
-                    inventory.setItem(11, cifra1);  return;
+                    inventory.setItem(11, cifra1);
                 case 2:
-                    inventory.setItem(11, cifra2);  return;
+                    inventory.setItem(11, cifra2);
                 case 3:
-                    inventory.setItem(11, cifra3);  return;
+                    inventory.setItem(11, cifra3);
                 case 4:
-                    inventory.setItem(11, cifra4);  return;
+                    inventory.setItem(11, cifra4);
                 case 5:
-                    inventory.setItem(11, cifra5);  return;
+                    inventory.setItem(11, cifra5);
                 case 6:
-                    inventory.setItem(11, cifra6);  return;
+                    inventory.setItem(11, cifra6);
                 case 7:
-                    inventory.setItem(11, cifra7);  return;
+                    inventory.setItem(11, cifra7);
                 case 8:
-                    inventory.setItem(11, cifra8);  return;
+                    inventory.setItem(11, cifra8);
                 case 9:
-                    inventory.setItem(11, cifra9);  return;
+                    inventory.setItem(11, cifra9);
                 case 0:
-                    inventory.setItem(11, cifra0);  return;
+                    inventory.setItem(11, cifra0);
             }
 
         }else if (Objects.requireNonNull(inventory.getItem(10)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(11), pusto) && !Objects.equals(inventory.getItem(12), pusto) ) {
             switch (number) {
                 case 1:
-                    inventory.setItem(10, cifra1);  return;
+                    inventory.setItem(10, cifra1);
                 case 2:
-                    inventory.setItem(10, cifra2);  return;
+                    inventory.setItem(10, cifra2);
                 case 3:
-                    inventory.setItem(10, cifra3);  return;
+                    inventory.setItem(10, cifra3);
                 case 4:
-                    inventory.setItem(10, cifra4);  return;
+                    inventory.setItem(10, cifra4);
                 case 5:
-                    inventory.setItem(10, cifra5);  return;
+                    inventory.setItem(10, cifra5);
                 case 6:
-                    inventory.setItem(10, cifra6);  return;
+                    inventory.setItem(10, cifra6);
                 case 7:
-                    inventory.setItem(10, cifra7);  return;
+                    inventory.setItem(10, cifra7);
                 case 8:
-                    inventory.setItem(10, cifra8);  return;
+                    inventory.setItem(10, cifra8);
                 case 9:
-                    inventory.setItem(10, cifra9);  return;
+                    inventory.setItem(10, cifra9);
                 case 0:
-                    inventory.setItem(10, cifra0);  return;
+                    inventory.setItem(10, cifra0);
             }
 
         }
         else if (Objects.requireNonNull(inventory.getItem(9)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(10), pusto) && !Objects.equals(inventory.getItem(11), pusto) && !Objects.equals(inventory.getItem(12), pusto)) {
             switch (number) {
                 case 1:
-                    inventory.setItem(9, cifra1);  return;
+                    inventory.setItem(9, cifra1);
                 case 2:
-                    inventory.setItem(9, cifra2);  return;
+                    inventory.setItem(9, cifra2);
                 case 3:
-                    inventory.setItem(9, cifra3);  return;
+                    inventory.setItem(9, cifra3);
                 case 4:
-                    inventory.setItem(9, cifra4);  return;
+                    inventory.setItem(9, cifra4);
                 case 5:
-                    inventory.setItem(9, cifra5);  return;
+                    inventory.setItem(9, cifra5);
                 case 6:
-                    inventory.setItem(9, cifra6);  return;
+                    inventory.setItem(9, cifra6);
                 case 7:
-                    inventory.setItem(9, cifra7);  return;
+                    inventory.setItem(9, cifra7);
                 case 8:
-                    inventory.setItem(9, cifra8);  return;
+                    inventory.setItem(9, cifra8);
                 case 9:
-                    inventory.setItem(9, cifra9);  return;
+                    inventory.setItem(9, cifra9);
                 case 0:
-                    inventory.setItem(9, cifra0);  return;
+                    inventory.setItem(9, cifra0);
             }
 
         }
