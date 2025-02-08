@@ -20,7 +20,7 @@ public class ReportCommand implements CommandExecutor {
         String playerNAME = strings[0];
 
         if(Bukkit.getPlayer(playerNAME) != null){
-            StringBuilder why = new StringBuilder();
+            StringBuilder why = new StringBuilder(" ");
             for(int i = 1; i < strings.length; i++){
                 why.append(strings[i]);
             }
