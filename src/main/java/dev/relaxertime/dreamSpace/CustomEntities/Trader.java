@@ -60,7 +60,7 @@ public class Trader implements Listener {
             ItemMeta item_meta = item.getItemMeta();
             item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
             item.setItemMeta(item_meta);
-            System.out.println();
+            System.out.println(item.lore());
             e.getWhoClicked().getInventory().addItem(item);
             e.setCancelled(true);
         } catch (IndexOutOfBoundsException ignored){
