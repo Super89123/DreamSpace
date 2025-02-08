@@ -84,8 +84,9 @@ public class Trader implements Listener {
             System.out.println(j);
             String[] desc_arr = j.split(";");
             System.out.println(Integer.decode(desc_arr[1]));
-            new_description.append(text(desc_arr[0], color(Integer.decode(desc_arr[1]))));
+            new_description = new_description.append(text(desc_arr[0], color(Integer.decode(desc_arr[1]))));
         }
+        System.out.println(new_description);
         descriptoin_map.put(CustomModelData, new_description);
     }
 
