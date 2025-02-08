@@ -7,6 +7,8 @@ import dev.relaxertime.dreamSpace.DreamSpace;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -17,12 +19,21 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static net.kyori.adventure.text.format.TextColor.color;
+
 
 @SuppressWarnings("deprecation")
 public class Trader implements Listener {
     private DreamSpace plugin;
     private Location location;
     private Inventory shop;
+    private HashMap<Integer, Component> descriptoin_map = new HashMap<>();
     private NPC npc;
     private int size = 18;
     private boolean isGun;
@@ -43,15 +54,28 @@ public class Trader implements Listener {
     @EventHandler
     public void oninventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
         if(e.getClickedInventory() != shop) return;
-        e.getWhoClicked().getInventory().addItem(e.getCursor());
+        ItemStack item = e.getCursor().clone();
+        ItemMeta item_meta = item.getItemMeta();
+        item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
+        item.setItemMeta(item_meta);
+        e.getWhoClicked().getInventory().addItem(item);
         e.setCancelled(true);
     }
 
-    public void addItem(ItemStack i, int CustomModelData){
+    public void addItem(ItemStack i, int CustomModelData, String price, String description_){
         if (shop.getSize() < 18) return;
         ItemMeta i_meta = i.getItemMeta();
+        Component description = text("Цена: ").color(color(0x006666)).append(text(price, color(0x0099CC00)));
+        i_meta.lore(Collections.singletonList(description));
         i_meta.setCustomModelData(CustomModelData);
         i.setItemMeta(i_meta);
-        shop.addItem(i.clone());
+        shop.addItem(i);
+        Component new_description = null;
+        for (String j : description_.split("/")){
+            String[] desc_arr = j.split(";");
+            new_description.append(text(desc_arr[0]).color(color(Integer.decode(desc_arr[1]))));
+        }
+        descriptoin_map.put(CustomModelData, new_description);
     }
+
 }
