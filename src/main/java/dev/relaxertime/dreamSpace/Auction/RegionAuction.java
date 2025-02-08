@@ -238,7 +238,7 @@ public class RegionAuction  implements Listener, CommandExecutor {
 
     public static class DataManager {
         private static final Gson gson = new Gson();
-        private static final File dataFile = new File("plugins/RegionAuction/data.json");
+        private static final File dataFile = new File("plugins/DreamSpace/data.json");
 
         public static void saveData(Map<String, RegionData> data) {
             try (FileWriter writer = new FileWriter(dataFile)) {
