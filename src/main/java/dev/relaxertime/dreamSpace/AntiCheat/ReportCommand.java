@@ -24,7 +24,7 @@ public class ReportCommand implements CommandExecutor {
             for(int i = 1; i < strings.length; i++){
                 why.append(strings[i]);
             }
-            Core.sendTelegramMessage("Игрок: " + playerNAME + " UUID: " + Objects.requireNonNull(Bukkit.getPlayer(playerNAME)).getUniqueId() + "Время: " + LocalTime.now());
+            Core.sendTelegramMessage("Поступил репорт на Игрока: " + playerNAME + " UUID: " + Objects.requireNonNull(Bukkit.getPlayer(playerNAME)).getUniqueId() + " Время: " + LocalTime.now() + " Причина: " + why);
 
 
         }
