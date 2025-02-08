@@ -10,3 +10,5 @@ commands:
     description: gdd
   report:
     description: gdd
+  arend:
+    description: fdd

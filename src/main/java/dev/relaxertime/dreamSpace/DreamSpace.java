@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import dev.relaxertime.dreamSpace.AntiCheat.Core;
 import dev.relaxertime.dreamSpace.AntiCheat.ReportCommand;
 import dev.relaxertime.dreamSpace.Auction.Auction;
+import dev.relaxertime.dreamSpace.Auction.Gleb;
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,9 +34,11 @@ public final class DreamSpace extends JavaPlugin {
         // Регистрация слушателя событий
         getServer().getPluginManager().registerEvents(antiCheatListener, this);
         getServer().getPluginManager().registerEvents(new Auction(), this);
+        getServer().getPluginManager().registerEvents(new Gleb(), this);
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
+        Objects.requireNonNull(getServer().getPluginCommand("arend")).setExecutor(new Gleb());
 
         // Plugin startup logic
 

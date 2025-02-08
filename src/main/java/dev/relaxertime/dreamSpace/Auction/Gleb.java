@@ -24,7 +24,7 @@ public class Gleb implements CommandExecutor, Listener {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (args.length < 2 || !args[0].equalsIgnoreCase("arend")) {
+        if (args.length < 2 || !command.getName().equalsIgnoreCase("arend")) {
             sender.sendMessage(ChatColor.RED + "Используйте: /arend [название региона]");
             return true;
         }
