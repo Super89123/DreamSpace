@@ -198,7 +198,7 @@ public class Auction implements CommandExecutor, Listener {
                     return;
             }
             return;
-        } else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto)) {
+        } else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(16, cifra1);
@@ -232,7 +232,7 @@ public class Auction implements CommandExecutor, Listener {
                     return;
             }
 
-        }else if (Objects.requireNonNull(inventory.getItem(15)).equals(pusto)) {
+        }else if (Objects.requireNonNull(inventory.getItem(15)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(16), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(15, cifra1);
@@ -267,7 +267,7 @@ public class Auction implements CommandExecutor, Listener {
             return;
 
         }
-        else if (Objects.requireNonNull(inventory.getItem(14)).equals(pusto)) {
+        else if (Objects.requireNonNull(inventory.getItem(14)).equals(pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(15), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(14, cifra1);
@@ -301,7 +301,7 @@ public class Auction implements CommandExecutor, Listener {
                     return;
             }
 
-        }else if (Objects.requireNonNull(inventory.getItem(16)).equals(pusto)) {
+        }else if (Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(13, cifra1);
@@ -328,7 +328,7 @@ public class Auction implements CommandExecutor, Listener {
             }
 
         }
-        else if (Objects.requireNonNull(inventory.getItem(12)).equals(pusto)) {
+        else if (Objects.requireNonNull(inventory.getItem(12)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(12, cifra1);  return;
@@ -351,7 +351,7 @@ public class Auction implements CommandExecutor, Listener {
                 case 0:
                     inventory.setItem(12, cifra0);  return;
             }
-        }else if (Objects.requireNonNull(inventory.getItem(11)).equals(pusto)) {
+        }else if (Objects.requireNonNull(inventory.getItem(11)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(12), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(11, cifra1);  return;
@@ -375,7 +375,7 @@ public class Auction implements CommandExecutor, Listener {
                     inventory.setItem(11, cifra0);  return;
             }
 
-        }else if (Objects.requireNonNull(inventory.getItem(10)).equals(pusto)) {
+        }else if (Objects.requireNonNull(inventory.getItem(10)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(11), pusto) && !Objects.equals(inventory.getItem(12), pusto) ) {
             switch (number) {
                 case 1:
                     inventory.setItem(10, cifra1);  return;
@@ -400,7 +400,7 @@ public class Auction implements CommandExecutor, Listener {
             }
 
         }
-        else if (Objects.requireNonNull(inventory.getItem(9)).equals(pusto)) {
+        else if (Objects.requireNonNull(inventory.getItem(9)).equals(pusto) && !Objects.requireNonNull(inventory.getItem(13)).equals(pusto) && !Objects.equals(inventory.getItem(14), pusto) && !Objects.equals(inventory.getItem(15), pusto) && !Objects.equals(inventory.getItem(16), pusto) && !Objects.equals(inventory.getItem(17), pusto) && !Objects.equals(inventory.getItem(10), pusto) && !Objects.equals(inventory.getItem(11), pusto) && !Objects.equals(inventory.getItem(12), pusto)) {
             switch (number) {
                 case 1:
                     inventory.setItem(9, cifra1);  return;
