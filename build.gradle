@@ -52,7 +52,9 @@ dependencies {
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'io.th0rgal:oraxen:1.181.0'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
-    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+    compileOnly ('com.github.MilkBowl:VaultAPI:1.7'){
+        exclude group: '*', module: '*'
+    }
 }
 
 
