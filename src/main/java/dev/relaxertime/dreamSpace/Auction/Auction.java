@@ -68,9 +68,13 @@ public class Auction implements CommandExecutor, Listener {
 
     @EventHandler
     public void clickEventonVibor(InventoryClickEvent event) {
+        ItemStack stack = OraxenItems.getItemById("null_icon").build();
+        ItemMeta meta = stack.getItemMeta();
+        meta.setDisplayName(ChatColor.GREEN + "Выставить на настоящий аукцион");
+        stack.setItemMeta(meta);
         ItemStack pusto = OraxenItems.getItemById("null_icon").build();
         if (!(event.getWhoClicked() instanceof Player)) return;
-        if (event.getInventory().equals(getFirstSellInventory())) {
+        if (event.getInventory().getItem(19) != null && Objects.requireNonNull(event.getInventory().getItem(19)).equals(stack)) {
             switch (event.getSlot()) {
                 case 19, 20, 21, 28, 29, 30:
                     event.getWhoClicked().openInventory(getTrueSellInventory());
