@@ -55,12 +55,17 @@ public class Trader implements Listener {
     public void onInventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
         if(e.getClickedInventory() != shop) return;
         if(e.getCurrentItem() == null) return;
-        ItemStack item = e.getCurrentItem().clone();
-        ItemMeta item_meta = item.getItemMeta();
-        item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
-        item.setItemMeta(item_meta);
-        e.getWhoClicked().getInventory().addItem(item);
-        e.setCancelled(true);
+        try{
+            ItemStack item = e.getCurrentItem().clone();
+            ItemMeta item_meta = item.getItemMeta();
+            item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
+            item.setItemMeta(item_meta);
+            e.getWhoClicked().getInventory().addItem(item);
+            e.setCancelled(true);
+        } catch (IndexOutOfBoundsException ignored){}
+
+
+
     }
 
     public void addItem(ItemStack i, int CustomModelData, String price, String description_){
