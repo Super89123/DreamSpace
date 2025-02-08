@@ -8,3 +8,5 @@ commands:
     description: gfd
   ah:
     description: gdd
+  report:
+    description: gdd

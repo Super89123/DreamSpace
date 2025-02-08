@@ -3,6 +3,7 @@ package dev.relaxertime.dreamSpace;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.relaxertime.dreamSpace.AntiCheat.Core;
+import dev.relaxertime.dreamSpace.AntiCheat.ReportCommand;
 import dev.relaxertime.dreamSpace.Auction.Auction;
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ public final class DreamSpace extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Auction(), this);
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
+        Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
 
         // Plugin startup logic
 
