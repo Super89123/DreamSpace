@@ -55,12 +55,17 @@ public class Trader implements Listener {
     public void onInventoryClick(InventoryClickEvent e) throws CloneNotSupportedException {
         if(e.getClickedInventory() != shop) return;
         if(e.getCurrentItem() == null) return;
-        ItemStack item = e.getCurrentItem().clone();
-        ItemMeta item_meta = item.getItemMeta();
-        item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
-        item.setItemMeta(item_meta);
-        e.getWhoClicked().getInventory().addItem(item);
-        e.setCancelled(true);
+        try{
+            ItemStack item = e.getCurrentItem().clone();
+            ItemMeta item_meta = item.getItemMeta();
+            item_meta.lore(Collections.singletonList(descriptoin_map.get(item_meta.getCustomModelData())));
+            item.setItemMeta(item_meta);
+            e.getWhoClicked().getInventory().addItem(item);
+            e.setCancelled(true);
+        } catch (IndexOutOfBoundsException ignored){}
+
+
+
     }
 
     public void addItem(ItemStack i, int CustomModelData, String price, String description_){
@@ -73,7 +78,9 @@ public class Trader implements Listener {
         shop.addItem(i);
         Component new_description = text("");
         for (String j : description_.split("/")){
+            System.out.println(j);
             String[] desc_arr = j.split(";");
+            System.out.println(Arrays.toString(desc_arr));
             new_description.append(text(desc_arr[0]).color(color(Integer.decode(desc_arr[1]))));
         }
         descriptoin_map.put(CustomModelData, new_description);
