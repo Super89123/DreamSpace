@@ -85,7 +85,7 @@ public class Core implements Listener {
                     }
                     zav.put(playerId, zav.get(playerId) + 1);
                     if (zav.get(playerId) > 10) {
-                        sendTelegramMessage("Обноружен Нарушитель! Ник: " + player.getName() + "UUID: " + playerId + "  + Сервер: DreamScape" + "Время: " + LocalTime.now());
+                        sendTelegramMessage("Обнаружен Нарушитель! Ник: " + player.getName() + " UUID: " + playerId + "  + Сервер: DreamScape " + "Время: " + LocalTime.now());
                     }
                 }
             }
