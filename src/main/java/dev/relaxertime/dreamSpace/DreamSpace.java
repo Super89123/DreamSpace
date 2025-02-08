@@ -5,18 +5,28 @@ import com.comphenix.protocol.ProtocolManager;
 import dev.relaxertime.dreamSpace.AntiCheat.Core;
 import dev.relaxertime.dreamSpace.AntiCheat.ReportCommand;
 import dev.relaxertime.dreamSpace.Auction.Auction;
-import dev.relaxertime.dreamSpace.Auction.Gleb;
+
+import dev.relaxertime.dreamSpace.Auction.RegionAuction;
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class DreamSpace extends JavaPlugin {
+    private Map<String, RegionAuction.RegionData> regionDataMap = new HashMap<>();
+    private Map<UUID, String> pendingPurchases = new HashMap<>();
+    private Economy economy;
+
 
     @Override
     public void onEnable() {
@@ -34,12 +44,25 @@ public final class DreamSpace extends JavaPlugin {
         // Регистрация слушателя событий
         getServer().getPluginManager().registerEvents(antiCheatListener, this);
         getServer().getPluginManager().registerEvents(new Auction(), this);
-        getServer().getPluginManager().registerEvents(new Gleb(), this);
+
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
-        Objects.requireNonNull(getServer().getPluginCommand("arend")).setExecutor(new Gleb());
 
+        if (!setupEconomy()) {
+            getLogger().severe("Vault не найден! Плагин отключен.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // Загрузка данных
+        regionDataMap = RegionAuction.DataManager.loadData();
+        getLogger().info("Данные загружены: " + regionDataMap.size() + " регионов.");
+
+        // Регистрация событий
+        getServer().getPluginManager().registerEvents(new RegionAuction(), this);
+
+        Objects.requireNonNull(getServer().getPluginCommand("unique")).setExecutor(new RegionAuction());
         // Plugin startup logic
 
     }
@@ -47,6 +70,14 @@ public final class DreamSpace extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        RegionAuction.DataManager.saveData(regionDataMap);
+        getLogger().info("Данные сохранены.");
         // Plugin shutdown logic
+    }
+    private boolean setupEconomy() {
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) return false;
+        economy = rsp.getProvider();
+        return economy != null;
     }
 }

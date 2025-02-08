@@ -1,4 +1,4 @@
-package com.example.regionauction;
+package dev.relaxertime.dreamSpace.Auction;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;//пись
 import org.bukkit.World;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,73 +32,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class RegionAuction extends JavaPlugin implements Listener {
+public class RegionAuction  implements Listener, CommandExecutor {
 
     private Map<String, RegionData> regionDataMap = new HashMap<>();
     private Map<UUID, String> pendingPurchases = new HashMap<>();
     private Economy economy;
 
-    @Override
-    public void onEnable() {
-        // Инициализация экономики
-        if (!setupEconomy()) {
-            getLogger().severe("Vault не найден! Плагин отключен.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
 
-        // Загрузка данных
-        regionDataMap = DataManager.loadData();
-        getLogger().info("Данные загружены: " + regionDataMap.size() + " регионов.");
-
-        // Регистрация событий
-        getServer().getPluginManager().registerEvents(this, this);
-
-        // Регистрация команд
-        getCommand("arend").setExecutor(this);
-        getCommand("aharend").setExecutor(this);
-        getCommand("buyregion").setExecutor(this);
-        getCommand("rentregion").setExecutor(this);
-    }
-
-    @Override
-    public void onDisable() {
-        // Сохранение данных
-        DataManager.saveData(regionDataMap);
-        getLogger().info("Данные сохранены.");
-    }
-
-    private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) return false;
-        economy = rsp.getProvider();
-        return economy != null;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (command.getName().equalsIgnoreCase("arend")) {
+        if (args[0].equalsIgnoreCase("arend")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                if (args.length == 1) {
-                    String regionName = args[0];
+                if (args.length == 2) {
+                    String regionName = args[1];
                     openRegionMenu(player, regionName);
                     return true;
                 }
             }
-        } else if (command.getName().equalsIgnoreCase("aharend")) {
+        } else if (args[0].equalsIgnoreCase("aharend")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 openAuctionMenu(player);
                 return true;
             }
-        } else if (command.getName().equalsIgnoreCase("buyregion")) {
+        } else if (args[0].equalsIgnoreCase("buyregion")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 handleBuyRegion(player);
                 return true;
             }
-        } else if (command.getName().equalsIgnoreCase("rentregion")) {
+        } else if (args[0].equalsIgnoreCase("rentregion")) {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 handleRentRegion(player);
@@ -241,7 +207,7 @@ public class RegionAuction extends JavaPlugin implements Listener {
         }
     }
 
-    private static class RegionData {
+    public static class RegionData {
         private final String regionName;
         private final UUID ownerId;
         private double price;
@@ -270,7 +236,7 @@ public class RegionAuction extends JavaPlugin implements Listener {
         }
     }
 
-    private static class DataManager {
+    public static class DataManager {
         private static final Gson gson = new Gson();
         private static final File dataFile = new File("plugins/RegionAuction/data.json");
 

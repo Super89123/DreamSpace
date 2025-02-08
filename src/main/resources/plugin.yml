@@ -2,7 +2,7 @@ name: DreamSpace
 version: '1.0-SNAPSHOT'
 main: dev.relaxertime.dreamSpace.DreamSpace
 api-version: '1.20'
-depend: [ ProtocolLib, Citizens, Oraxen  ]
+depend: [ ProtocolLib, Citizens, Oraxen, WorldGuard  ]
 commands:
   ac:
     description: gfd
@@ -10,5 +10,5 @@ commands:
     description: gdd
   report:
     description: gdd
-  arend:
+  unique:
     description: fdd
