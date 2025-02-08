@@ -20,6 +20,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -31,6 +36,7 @@ public class Core implements Listener {
     private final Map<UUID, Integer> hitCount = new HashMap<>();
     private final Map<UUID, Long> lastHitTime = new HashMap<>();
     private final Map<UUID, NPC> playerNPCs = new HashMap<>();
+    private final Map<UUID, Integer> zav = new HashMap<>();
 
     public Core(DreamSpace plugin) {
         this.plugin = plugin;
@@ -71,6 +77,16 @@ public class Core implements Listener {
                     hitCount.put(playerId, 0);
                 }
             }
+            NPC npf = playerNPCs.get(playerId);
+            if(event.getEntity().equals(npf.getEntity())){
+                if(!zav.containsKey(playerId)){
+                    zav.put(playerId, 0);
+                }
+                zav.put(playerId, zav.get(playerId) +1);
+                if(zav.get(playerId) > 10){
+                    sendTelegramMessage("Обноружен Нарушитель! \n  Ник: " + player.getName() + "UUID: " + playerId + "\n  + Сервер: DreamScape" +"Время: "+ LocalTime.now());
+                }
+            }
         }
     }
 
@@ -79,6 +95,7 @@ public class Core implements Listener {
         NPC npc = registry.createNPC(EntityType.PLAYER, player.getName());
         npc.spawn(player.getLocation());
         npc.setFlyable(true);
+
 
 
         playerNPCs.put(player.getUniqueId(), npc);
@@ -117,5 +134,34 @@ public class Core implements Listener {
                 player.sendMessage(ChatColor.GREEN + "NPC был уничтожен.");
             }
         }, 20L * 30);
+    }
+    public static void sendTelegramMessage(String message){
+        try {
+            // Замените на ваш токен и метод API
+            String botToken = "7975211101:AAEAkLj11OBpU3MME5flsMA9utmhk_A4MpM";
+            String method = "sendMessage";
+            String chat = "-1002358135016";
+            String urlString = "https://api.telegram.org/bot" + botToken + "/" + method+"?chat_id="+chat+"&text="+message;
+
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            System.out.println("Response: " + response.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
