@@ -46,6 +46,7 @@ public class PetCommand implements CommandExecutor, Listener {
                         Pet pet = Pet.getPetById(i );
                         inventory.setItem(i, pet.getPetStackByID());
                     }
+                    player.openInventory(inventory);
 
                 } else if (strings[0].equalsIgnoreCase("summon")) {
                     if(strings.length != 2) {

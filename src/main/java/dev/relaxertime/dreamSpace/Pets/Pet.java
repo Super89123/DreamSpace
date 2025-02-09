@@ -36,6 +36,7 @@ public abstract class Pet implements Listener {
         this.headName = headName;
         this.id = id;
         petsRegistry.put(id, this);
+        enity = getRewardEntity();
 
 
 
@@ -64,7 +65,7 @@ public abstract class Pet implements Listener {
                 }
 
                 // Применяем вращение к голове ArmorStand
-                getRewardEntity().setHeadPose(new EulerAngle(Math.toRadians(angle), 0, 0));
+                enity.setHeadPose(new EulerAngle(Math.toRadians(angle), 0, 0));
             }
         }.runTaskTimer(plugin, 0, 1);
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -103,13 +104,13 @@ public abstract class Pet implements Listener {
         return armorStand;
     }
     public void spawnEntity(Location location){
-        getRewardEntity().teleport(location);
+        enity.teleport(location);
     }
 
     protected abstract void passive(Player player);
     @EventHandler
     public void interactEvent(PlayerInteractAtEntityEvent event){
-        if(event.getRightClicked().equals(getRewardEntity())){
+        if(event.getRightClicked().equals(enity)){
             Player player = event.getPlayer();
             NamespacedKey key = new NamespacedKey(plugin, "pets");
             PersistentDataContainer container = player.getPersistentDataContainer();
@@ -127,6 +128,7 @@ public abstract class Pet implements Listener {
                 int[] newArray = list.stream().mapToInt(Integer::intValue).toArray();
 
                 container.set(key, PersistentDataType.INTEGER_ARRAY, newArray);
+                player.sendMessage(ChatColor.GREEN + "Вы получили" + getName());
             }
             else {
                 player.sendMessage(ChatColor.RED + "У вас уже есть этот питомец");
