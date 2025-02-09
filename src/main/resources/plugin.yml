@@ -12,3 +12,5 @@ commands:
     description: gdd
   unique:
     description: fdd
+  pet:
+    description: gfd

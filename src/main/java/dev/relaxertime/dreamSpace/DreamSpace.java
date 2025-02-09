@@ -10,6 +10,7 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 
 import dev.relaxertime.dreamSpace.Pets.FirstPet;
+import dev.relaxertime.dreamSpace.Pets.PetCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -47,6 +48,7 @@ public final class DreamSpace extends JavaPlugin {
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
+        getServer().getPluginCommand("pet").setExecutor(new PetCommand(this));
         FirstPet pet = new FirstPet(this);
         getServer().getPluginManager().registerEvents(pet, this);
 
