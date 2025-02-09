@@ -38,13 +38,20 @@ public abstract class Pet implements Listener {
         petsRegistry.put(id, this);
 
 
+
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                for(Player player : getPlayers()){
-                    passive(player);
+                for(Player p : Bukkit.getOnlinePlayers()){
+                    NamespacedKey activeId = new NamespacedKey(plugin, "activePet");
+                    PersistentDataContainer pcs = p.getPersistentDataContainer();
+                    if(pcs.has(activeId)){
+                        if(pcs.get(activeId, PersistentDataType.INTEGER).equals(id)){
+                            passive(p);
+                        }
+                    }
                 }
-
             }
         }.runTaskTimer(plugin, 0, 10);
         new BukkitRunnable(){
