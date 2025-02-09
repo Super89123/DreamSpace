@@ -48,7 +48,7 @@ public abstract class Pet implements Listener {
                     NamespacedKey activeId = new NamespacedKey(plugin, "activePet");
                     PersistentDataContainer pcs = p.getPersistentDataContainer();
                     if(pcs.has(activeId)){
-                        if(pcs.get(activeId, PersistentDataType.INTEGER).equals(id)){
+                        if(Objects.equals(pcs.get(activeId, PersistentDataType.INTEGER), id)){
                             passive(p);
                         }
                     }
@@ -61,11 +61,11 @@ public abstract class Pet implements Listener {
             public void run() {
                 angle += 10;
                 if (angle >= 360) {
-                    angle = 0; // Сбрасываем угол после полного круга
+                    angle = 0;
                 }
 
-                // Применяем вращение к голове ArmorStand
-                enity.setHeadPose(new EulerAngle(Math.toRadians(angle), 0, 0));
+
+                enity.setHeadPose(new EulerAngle(0, Math.toRadians(angle), 0));
             }
         }.runTaskTimer(plugin, 0, 1);
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -98,8 +98,10 @@ public abstract class Pet implements Listener {
         skull.setItemMeta(meta);
         armorStand.setItem(EquipmentSlot.HEAD, skull);
         armorStand.setBasePlate(false);
-        armorStand.setCustomName(ChatColor.BLUE + "Питомец: " + name + "ПКМ чтобы забрать");
+        armorStand.setCustomName(ChatColor.BLUE + "Питомец: " + name + " ПКМ чтобы забрать");
         armorStand.setInvisible(true);
+        armorStand.setCustomNameVisible(true);
+        armorStand.setCanMove(true);
 
         return armorStand;
     }

@@ -36,15 +36,15 @@ public class PetCommand implements CommandExecutor, Listener {
                     Inventory inventory = Bukkit.createInventory(null, 54, "Меню ваших питомцев");
                     NamespacedKey key = new NamespacedKey(plugin, "pets");
                     PersistentDataContainer container = player.getPersistentDataContainer();
-                    if(container.has(key)){
+                    if(!container.has(key)){
                         int [] l = {0};
                         container.set(key, PersistentDataType.INTEGER_ARRAY, l);
                     }
                     int[] arrayOfIds = container.get(key, PersistentDataType.INTEGER_ARRAY);
                     assert arrayOfIds != null;
-                    for(int i =0; i < arrayOfIds.length; i++){
+                    for(int i =1; i < arrayOfIds.length; i++){
                         Pet pet = Pet.getPetById(i );
-                        inventory.setItem(i, pet.getPetStackByID());
+                        inventory.setItem(i-1, pet.getPetStackByID());
                     }
                     player.openInventory(inventory);
 
