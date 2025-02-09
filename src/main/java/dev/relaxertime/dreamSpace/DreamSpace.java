@@ -8,7 +8,7 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 
 
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
-import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

@@ -1,10 +1,6 @@
 package dev.relaxertime.dreamSpace.Auction;
 
 
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;//пись
@@ -35,7 +31,6 @@ public class RegionAuction  implements Listener, CommandExecutor {
 
     private Map<String, RegionData> regionDataMap = new HashMap<>();
     private Map<UUID, String> pendingPurchases = new HashMap<>();
-    private Economy economy;
 
 
 
@@ -170,15 +165,15 @@ public class RegionAuction  implements Listener, CommandExecutor {
             RegionData regionData = regionDataMap.get(regionName);
             if (regionData != null) {
                 double price = regionData.getPrice();
-                if (economy.has(player, price)) {
-                    economy.withdrawPlayer(player, price);
-                    economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
-                    player.sendMessage(ChatColor.GREEN + "Вы купили регион " + regionName + "!");
-                    regionDataMap.remove(regionName);
-                    pendingPurchases.remove(playerId);
-                } else {
-                    player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
-                }
+                //if (economy.has(player, price)) {
+                  //  economy.withdrawPlayer(player, price);
+                    //economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
+                    //player.sendMessage(ChatColor.GREEN + "Вы купили регион " + regionName + "!");
+                    //regionDataMap.remove(regionName);
+                    //pendingPurchases.remove(playerId);
+                //} else {
+                 //   player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
+                //}
             }
         } else {
             player.sendMessage(ChatColor.RED + "У вас нет активной покупки региона.");
@@ -192,14 +187,14 @@ public class RegionAuction  implements Listener, CommandExecutor {
             RegionData regionData = regionDataMap.get(regionName);
             if (regionData != null) {
                 double price = regionData.getRentPrice();
-                if (economy.has(player, price)) {
-                    economy.withdrawPlayer(player, price);
-                    economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
-                    player.sendMessage(ChatColor.GREEN + "Вы арендовали регион " + regionName + "!");
-                    pendingPurchases.remove(playerId);
-                } else {
-                    player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
-                }
+                //if (economy.has(player, price)) {
+                  //  economy.withdrawPlayer(player, price);
+                   // economy.depositPlayer(Bukkit.getOfflinePlayer(regionData.getOwnerId()), price);
+                   // player.sendMessage(ChatColor.GREEN + "Вы арендовали регион " + regionName + "!");
+                  //  pendingPurchases.remove(playerId);
+                //} else {
+                  //  player.sendMessage(ChatColor.RED + "У вас недостаточно денег.");
+                //}
             }
         } else {
             player.sendMessage(ChatColor.RED + "У вас нет активной аренды региона.");

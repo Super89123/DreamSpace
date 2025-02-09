@@ -1,6 +1,7 @@
 package dev.relaxertime.dreamSpace.AntiCheat;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,9 +26,12 @@ public class ReportCommand implements CommandExecutor {
                 why.append(strings[i]);
                 why.append(" ");
             }
-            Core.sendTelegramMessage("Поступил репорт на Игрока: " + playerNAME + " UUID: " + Objects.requireNonNull(Bukkit.getPlayer(playerNAME)).getUniqueId() + " Время: " + LocalTime.now() + " Причина: " + why);
+            Core.sendTelegramMessage("Поступил репорт на Игрока: " + playerNAME +" От игрока: "+commandSender.getName()+" UUID: " + Objects.requireNonNull(Bukkit.getPlayer(playerNAME)).getUniqueId() + " Время: " + LocalTime.now() + " Причина: " + why);
 
 
+        }
+        else{
+            commandSender.sendMessage(ChatColor.RED + "Игрок не в сети!");
         }
 
 
