@@ -1,7 +1,6 @@
 package dev.relaxertime.dreamSpace.Auction;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -236,28 +235,5 @@ public class RegionAuction  implements Listener, CommandExecutor {
         }
     }
 
-    public static class DataManager {
-        private static final Gson gson = new Gson();
-        private static final File dataFile = new File("plugins/DreamSpace/data.json");
 
-        public static void saveData(Map<String, RegionData> data) {
-            try (FileWriter writer = new FileWriter(dataFile)) {
-                gson.toJson(data, writer);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public static Map<String, RegionData> loadData() {
-            if (!dataFile.exists()) return new HashMap<>();
-
-            try (FileReader reader = new FileReader(dataFile)) {
-                Type type = new TypeToken<Map<String, RegionData>>() {}.getType();
-                return gson.fromJson(reader, type);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new HashMap<>();
-            }
-        }
-    }
 }

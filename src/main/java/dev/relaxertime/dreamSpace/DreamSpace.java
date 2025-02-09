@@ -6,7 +6,7 @@ import dev.relaxertime.dreamSpace.AntiCheat.Core;
 import dev.relaxertime.dreamSpace.AntiCheat.ReportCommand;
 import dev.relaxertime.dreamSpace.Auction.Auction;
 
-import dev.relaxertime.dreamSpace.Auction.RegionAuction;
+
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -23,9 +23,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class DreamSpace extends JavaPlugin {
-    private Map<String, RegionAuction.RegionData> regionDataMap = new HashMap<>();
-    private Map<UUID, String> pendingPurchases = new HashMap<>();
-    private Economy economy;
 
 
     @Override
@@ -49,7 +46,7 @@ public final class DreamSpace extends JavaPlugin {
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
 
-        if (!setupEconomy()) {
+        /* if (!setupEconomy()) {
             getLogger().severe("Vault не найден! Плагин отключен.");
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -63,21 +60,15 @@ public final class DreamSpace extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RegionAuction(), this);
 
         Objects.requireNonNull(getServer().getPluginCommand("unique")).setExecutor(new RegionAuction());
-        // Plugin startup logic
+        */ // Plugin startup logic
 
     }
 
 
     @Override
     public void onDisable() {
-        RegionAuction.DataManager.saveData(regionDataMap);
-        getLogger().info("Данные сохранены.");
+
         // Plugin shutdown logic
     }
-    private boolean setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) return false;
-        economy = rsp.getProvider();
-        return economy != null;
-    }
+
 }
