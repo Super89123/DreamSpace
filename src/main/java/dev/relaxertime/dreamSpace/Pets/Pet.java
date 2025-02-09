@@ -3,32 +3,30 @@ package dev.relaxertime.dreamSpace.Pets;
 import dev.relaxertime.dreamSpace.DreamSpace;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Skull;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 
 import java.util.*;
-
+@SuppressWarnings("deprecation")
 public abstract class Pet implements Listener {
     private final String name;
     private final DreamSpace plugin;
     private final boolean isActive = false;
     private final Set<Player> players = new HashSet<>();
     private final String headName;
-    private ArmorStand enity;
+    private final ArmorStand entity;
     private final int id;
     private static final Map<Integer, Pet> petsRegistry = new HashMap<>();
+    private final Set<ArmorStand> armorStands = new HashSet<>();
 
     protected Pet(String name, DreamSpace plugin, String headName, int id) {
         this.name = name;
@@ -36,7 +34,7 @@ public abstract class Pet implements Listener {
         this.headName = headName;
         this.id = id;
         petsRegistry.put(id, this);
-        enity = getRewardEntity();
+        entity = getRewardEntity();
 
 
 
@@ -64,8 +62,10 @@ public abstract class Pet implements Listener {
                     angle = 0;
                 }
 
+                for(ArmorStand as : armorStands){
+                    as.setHeadPose(new EulerAngle(0, Math.toRadians(angle), 0));
+                }
 
-                enity.setHeadPose(new EulerAngle(0, Math.toRadians(angle), 0));
             }
         }.runTaskTimer(plugin, 0, 1);
         Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -73,7 +73,7 @@ public abstract class Pet implements Listener {
     protected String getName(){
         return name;
     }
-    public ItemStack getPetStackByID(){
+    public ItemStack getPetStack(){
 
         ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) stack.getItemMeta();
@@ -81,7 +81,8 @@ public abstract class Pet implements Listener {
         NamespacedKey key = new NamespacedKey(plugin, "itemstack_id");
         container.set(key, PersistentDataType.INTEGER, id);
         meta.setOwningPlayer(Bukkit.getOfflinePlayer(headName));
-        meta.setLore(List.of(ChatColor.WHITE + "Здоровье: 100"));
+        meta.setLore(List.of(ChatColor.WHITE + "Здоровье: 100", ChatColor.WHITE + "Уровень : 1"));
+        meta.setDisplayName(name);
 
 
         stack.setItemMeta(meta);
@@ -105,14 +106,30 @@ public abstract class Pet implements Listener {
 
         return armorStand;
     }
-    public void spawnEntity(Location location){
-        enity.teleport(location);
+    public void spawnEntity(Location location)
+    {
+        ArmorStand as = location.getWorld().spawn(new Location(location.getWorld(), location.x(), location.y()-1, location.z()), ArmorStand.class);{
+        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        meta.setDisplayName("Питомец");
+        meta.setOwningPlayer(Bukkit.getOfflinePlayer(headName));
+        skull.setItemMeta(meta);
+        as.setItem(EquipmentSlot.HEAD, skull);
+        as.setBasePlate(false);
+        as.setCustomName(ChatColor.BLUE + "Питомец: " + name + " ПКМ чтобы забрать");
+        as.setInvisible(true);
+        as.setCustomNameVisible(true);
+        as.setCanMove(true);
+        armorStands.add(as);
+
+    }
     }
 
     protected abstract void passive(Player player);
     @EventHandler
     public void interactEvent(PlayerInteractAtEntityEvent event){
-        if(event.getRightClicked().equals(enity)){
+        if(event.getRightClicked() instanceof ArmorStand){
+        if(event.getRightClicked().equals(entity) || armorStands.contains((ArmorStand) event.getRightClicked())){
             Player player = event.getPlayer();
             NamespacedKey key = new NamespacedKey(plugin, "pets");
             PersistentDataContainer container = player.getPersistentDataContainer();
@@ -130,7 +147,8 @@ public abstract class Pet implements Listener {
                 int[] newArray = list.stream().mapToInt(Integer::intValue).toArray();
 
                 container.set(key, PersistentDataType.INTEGER_ARRAY, newArray);
-                player.sendMessage(ChatColor.GREEN + "Вы получили" + getName());
+                player.sendMessage(ChatColor.GREEN + "Вы получили " + getName());
+                event.getRightClicked().remove();
             }
             else {
                 player.sendMessage(ChatColor.RED + "У вас уже есть этот питомец");
@@ -138,8 +156,12 @@ public abstract class Pet implements Listener {
             event.setCancelled(true);
         }
 
+     }
     }
     public static Pet getPetById(int id) {
         return petsRegistry.get(id);
+    }
+    public int getId(){
+        return id;
     }
 }
