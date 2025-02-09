@@ -9,6 +9,7 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 
+import dev.relaxertime.dreamSpace.Pets.FirstPet;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.event.PaintEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +47,8 @@ public final class DreamSpace extends JavaPlugin {
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
+        FirstPet pet = new FirstPet(this);
+        getServer().getPluginManager().registerEvents(pet, this);
 
         /* if (!setupEconomy()) {
             getLogger().severe("Vault не найден! Плагин отключен.");
