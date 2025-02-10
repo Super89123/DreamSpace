@@ -38,6 +38,10 @@ public class Core implements Listener {
     private final Map<UUID, NPC> playerNPCs = new HashMap<>();
     private final Map<UUID, Integer> zav = new HashMap<>();
 
+    /**
+     * @param plugin Объект DreamSpace
+     *
+     */
     public Core(DreamSpace plugin) {
         this.plugin = plugin;
 
@@ -118,7 +122,7 @@ public class Core implements Listener {
                 double z = loc.getZ() + 2 * Math.sin(angle);
                 Random random = new Random();
 
-                double randomY = -2 + (random.nextDouble() * 4);
+                double randomY = -2 + (random.nextDouble() * 3);
                 npc.teleport(new Location(loc.getWorld(), x, loc.getY() + randomY, z, loc.getYaw(), loc.getPitch()), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
                 angle += Math.PI / 16;
@@ -137,9 +141,13 @@ public class Core implements Listener {
             }
         }, 20L * 30);
     }
+
+    /**
+     * @param message Сообщеие которое стоит отправить в телеграм.
+     */
     public static void sendTelegramMessage(String message){
         try {
-            // Замените на ваш токен и метод API
+
             String botToken = "7975211101:AAEAkLj11OBpU3MME5flsMA9utmhk_A4MpM";
             String method = "sendMessage";
             String chat = "-1002358135016";
@@ -150,7 +158,6 @@ public class Core implements Listener {
             connection.setRequestMethod("GET");
 
             int responseCode = connection.getResponseCode();
-            System.out.println("Response Code: " + responseCode);
 
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String inputLine;
@@ -161,7 +168,7 @@ public class Core implements Listener {
             }
             in.close();
 
-            System.out.println("Response: " + response.toString());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
