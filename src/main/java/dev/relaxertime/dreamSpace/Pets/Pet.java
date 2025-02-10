@@ -117,7 +117,7 @@ public abstract class Pet implements Listener {
         skull.setItemMeta(meta);
         as.setItem(EquipmentSlot.HEAD, skull);
         as.setBasePlate(false);
-        as.setCustomName(ChatColor.BLUE + "Питомец: " + name + " ПКМ чтобы забрать");
+        as.setCustomName(ChatColor.GREEN + "Питомец: " + name + " ПКМ чтобы забрать");
         as.setInvisible(true);
         as.setCustomNameVisible(true);
         as.setCanMove(true);

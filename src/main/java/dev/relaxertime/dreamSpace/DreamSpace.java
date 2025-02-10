@@ -8,6 +8,7 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 
+import dev.relaxertime.dreamSpace.Magic.FireballSpell;
 import dev.relaxertime.dreamSpace.Magic.ManaController;
 import dev.relaxertime.dreamSpace.Pets.FirstPet;
 import dev.relaxertime.dreamSpace.Pets.PetCommand;
@@ -44,6 +45,9 @@ public final class DreamSpace extends JavaPlugin {
         // Регистрация слушателя событий
         getServer().getPluginManager().registerEvents(antiCheatListener, this);
         getServer().getPluginManager().registerEvents(new Auction(), this);
+
+        getServer().getPluginManager().registerEvents(new FireballSpell(this), this);
+        Objects.requireNonNull(getServer().getPluginCommand("magic")).setExecutor(new PetCommand(this));
 
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());

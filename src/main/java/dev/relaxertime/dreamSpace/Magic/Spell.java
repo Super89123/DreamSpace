@@ -1,6 +1,7 @@
 package dev.relaxertime.dreamSpace.Magic;
 
 import dev.relaxertime.dreamSpace.DreamSpace;
+import dev.relaxertime.dreamSpace.Pets.Pet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +11,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @SuppressWarnings("deprecation")
@@ -18,6 +25,8 @@ public abstract class Spell implements Listener {
     private final DreamSpace plugin;
     private final int manaCost;
     private final int cooldownSec;
+    private static final Map<Integer, Spell> spells = new HashMap<>();
+    private final String name;
 
     /**
      * @param customModelData CustomModelData предмета
@@ -25,11 +34,13 @@ public abstract class Spell implements Listener {
      * @param manaCost Стоимость в мане
      * @param cooldownSec Задержка на использование
      */
-    protected Spell(int customModelData, DreamSpace plugin, int manaCost, int cooldownSec) {
+    protected Spell(int customModelData, DreamSpace plugin, int manaCost, int cooldownSec, String name) {
         this.customModelData = customModelData;
         this.plugin = plugin;
         this.manaCost = manaCost;
         this.cooldownSec = cooldownSec;
+        this.name = name;
+        spells.put(customModelData, this);
     }
 
     public abstract void whatToDo(Player player, Location clickedLocation);
@@ -64,6 +75,21 @@ public abstract class Spell implements Listener {
                 }
             }
         }
+    }
+    public static Spell getPetByCustomModelData(int cms) {
+        return spells.get(cms);
+    }
+    public ItemStack getSpellStack(){
+        ItemStack itemStack = new ItemStack(Material.BOOK);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setCustomModelData(customModelData);
+        meta.setDisplayName(name);
+        meta.setLore(List.of(ChatColor.WHITE + "Стоимость в мане: " + manaCost, ChatColor.WHITE + "Задержка: " + cooldownSec * 20 + " секунд" ));
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+    public String getName(){
+        return name;
     }
 
 }
