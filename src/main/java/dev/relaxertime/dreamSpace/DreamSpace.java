@@ -9,6 +9,7 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 
 import dev.relaxertime.dreamSpace.Magic.FireballSpell;
+import dev.relaxertime.dreamSpace.Magic.MagicCommand;
 import dev.relaxertime.dreamSpace.Magic.ManaController;
 import dev.relaxertime.dreamSpace.Pets.FirstPet;
 import dev.relaxertime.dreamSpace.Pets.PetCommand;
@@ -47,7 +48,7 @@ public final class DreamSpace extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Auction(), this);
 
         getServer().getPluginManager().registerEvents(new FireballSpell(this), this);
-        Objects.requireNonNull(getServer().getPluginCommand("magic")).setExecutor(new PetCommand(this));
+        Objects.requireNonNull(getServer().getPluginCommand("magic")).setExecutor(new MagicCommand());
 
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
@@ -60,7 +61,10 @@ public final class DreamSpace extends JavaPlugin {
             @Override
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()){
-                    Component cp = Component.text("Мана: " + ManaController.getPlayerMana(player , DreamSpace.this), TextColor.color(124, 150, 104));
+                    if(ManaController.getPlayerMana(player, DreamSpace.this) < 10000){
+                        ManaController.setPlayerMana(player, DreamSpace.this, Math.min(ManaController.getPlayerMana(player, DreamSpace.this) + 5, 10000));
+                    }
+                    Component cp = Component.text("Мана: " + ManaController.getPlayerMana(player , DreamSpace.this), TextColor.color(124, 90, 104));
                     player.sendActionBar(cp);
                 }
 
