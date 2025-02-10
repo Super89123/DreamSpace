@@ -8,8 +8,11 @@ import dev.relaxertime.dreamSpace.Auction.Auction;
 
 import dev.relaxertime.dreamSpace.CustomEntities.Trader;
 
+import dev.relaxertime.dreamSpace.Magic.ManaController;
 import dev.relaxertime.dreamSpace.Pets.FirstPet;
 import dev.relaxertime.dreamSpace.Pets.PetCommand;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,7 +48,7 @@ public final class DreamSpace extends JavaPlugin {
 
         Objects.requireNonNull(getServer().getPluginCommand("ah")).setExecutor(new Auction());
         Objects.requireNonNull(getServer().getPluginCommand("report")).setExecutor(new ReportCommand());
-        getServer().getPluginCommand("pet").setExecutor(new PetCommand(this));
+        Objects.requireNonNull(getServer().getPluginCommand("pet")).setExecutor(new PetCommand(this));
         FirstPet pet = new FirstPet(this);
         getServer().getPluginManager().registerEvents(pet, this);
         new BukkitRunnable(){
@@ -53,7 +56,8 @@ public final class DreamSpace extends JavaPlugin {
             @Override
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()){
-
+                    Component cp = Component.text("Мана: " + ManaController.getPlayerMana(player , DreamSpace.this), TextColor.color(124, 150, 104));
+                    player.sendActionBar(cp);
                 }
 
             }

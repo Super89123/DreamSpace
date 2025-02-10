@@ -29,13 +29,13 @@ import static net.kyori.adventure.text.format.TextColor.color;
 
 @SuppressWarnings("deprecation")
 public class Trader implements Listener {
-    private DreamSpace plugin;
-    private Location location;
-    private Inventory shop;
-    private HashMap<Integer, Component> descriptoin_map = new HashMap<>();
-    private NPC npc;
-    private int size = 18;
-    private boolean isGun;
+    private final DreamSpace plugin;
+    private final Location location;
+    private final Inventory shop;
+    private final HashMap<Integer, Component> descriptoin_map = new HashMap<>();
+    private final NPC npc;
+    private final int size = 18;
+
 
     public Trader(DreamSpace plugin, Location loc, String label, String name) throws CloneNotSupportedException {
         this.plugin = plugin;
