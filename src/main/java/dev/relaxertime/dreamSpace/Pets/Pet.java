@@ -2,6 +2,7 @@ package dev.relaxertime.dreamSpace.Pets;
 
 import dev.relaxertime.dreamSpace.DreamSpace;
 import org.bukkit.*;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,18 +24,23 @@ public abstract class Pet implements Listener {
     private final boolean isActive = false;
     private final Set<Player> players = new HashSet<>();
     private final String headName;
-    private final ArmorStand entity;
+
     private final int id;
     private static final Map<Integer, Pet> petsRegistry = new HashMap<>();
     private final Set<ArmorStand> armorStands = new HashSet<>();
 
+    /**
+     * @param name Имя питомца
+     * @param plugin Объект DreamSpace
+     * @param headName Имя игрока для данного питомца
+     * @param id Айди для регестрации питомца
+     */
     protected Pet(String name, DreamSpace plugin, String headName, int id) {
         this.name = name;
         this.plugin = plugin;
         this.headName = headName;
         this.id = id;
         petsRegistry.put(id, this);
-        entity = getRewardEntity();
 
 
 
@@ -70,9 +76,17 @@ public abstract class Pet implements Listener {
         }.runTaskTimer(plugin, 0, 1);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+
+    /**
+     * @return Возвращает имя питомца
+     */
     protected String getName(){
         return name;
     }
+
+    /**
+     * @return Возвращает ItemStack Предмета для Меню
+     */
     public ItemStack getPetStack(){
 
         ItemStack stack = new ItemStack(Material.PLAYER_HEAD);
@@ -87,25 +101,12 @@ public abstract class Pet implements Listener {
 
         stack.setItemMeta(meta);
         return stack;
-    }    protected Set<Player> getPlayers(){
-        return players;
     }
-    private ArmorStand getRewardEntity(){
-        ArmorStand armorStand = Objects.requireNonNull(Bukkit.getWorld("world")).spawn(new Location(Bukkit.getWorld("world"), 0, 0, 0), ArmorStand.class);
-        ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setDisplayName("Питомец");
-        meta.setOwningPlayer(Bukkit.getOfflinePlayer(headName));
-        skull.setItemMeta(meta);
-        armorStand.setItem(EquipmentSlot.HEAD, skull);
-        armorStand.setBasePlate(false);
-        armorStand.setCustomName(ChatColor.BLUE + "Питомец: " + name + " ПКМ чтобы забрать");
-        armorStand.setInvisible(true);
-        armorStand.setCustomNameVisible(true);
-        armorStand.setCanMove(true);
 
-        return armorStand;
-    }
+
+    /**
+     * @param location Призывает питомца на заданную локацию.
+     */
     public void spawnEntity(Location location)
     {
         ArmorStand as = location.getWorld().spawn(new Location(location.getWorld(), location.x(), location.y()-1, location.z()), ArmorStand.class);{
@@ -129,7 +130,7 @@ public abstract class Pet implements Listener {
     @EventHandler
     public void interactEvent(PlayerInteractAtEntityEvent event){
         if(event.getRightClicked() instanceof ArmorStand){
-        if(event.getRightClicked().equals(entity) || armorStands.contains((ArmorStand) event.getRightClicked())){
+        if(armorStands.contains((ArmorStand) event.getRightClicked())){
             Player player = event.getPlayer();
             NamespacedKey key = new NamespacedKey(plugin, "pets");
             PersistentDataContainer container = player.getPersistentDataContainer();
@@ -158,9 +159,18 @@ public abstract class Pet implements Listener {
 
      }
     }
+
+    /**
+     * @param id - Айди питомца
+     * @return Питомца по данному id
+     */
     public static Pet getPetById(int id) {
         return petsRegistry.get(id);
     }
+
+    /**
+     * @return Айди питомца
+     */
     public int getId(){
         return id;
     }

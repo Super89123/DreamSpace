@@ -146,6 +146,11 @@ public class Auction implements CommandExecutor, Listener {
         }
         return inventory;
     }
+
+    /**
+     * @param name Имя пустого предмета
+     * @return Возвращает пустой предмет с конкретным названием
+     */
     public static ItemStack buildEmptyStack(String name){
         ItemStack stack = OraxenItems.getItemById("null_icon").build();
         ItemMeta meta = stack.getItemMeta();

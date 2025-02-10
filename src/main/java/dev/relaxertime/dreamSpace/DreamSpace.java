@@ -1,7 +1,6 @@
 package dev.relaxertime.dreamSpace;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
+
 import dev.relaxertime.dreamSpace.AntiCheat.Core;
 import dev.relaxertime.dreamSpace.AntiCheat.ReportCommand;
 import dev.relaxertime.dreamSpace.Auction.Auction;
@@ -14,17 +13,15 @@ import dev.relaxertime.dreamSpace.Pets.PetCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
+
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
+
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.awt.event.PaintEvent;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.Objects;
-import java.util.UUID;
-
 public final class DreamSpace extends JavaPlugin {
 
 
@@ -38,7 +35,7 @@ public final class DreamSpace extends JavaPlugin {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
-        // Регистрация слушателя пакетов
+
 
 
         // Регистрация слушателя событий
@@ -51,22 +48,17 @@ public final class DreamSpace extends JavaPlugin {
         getServer().getPluginCommand("pet").setExecutor(new PetCommand(this));
         FirstPet pet = new FirstPet(this);
         getServer().getPluginManager().registerEvents(pet, this);
+        new BukkitRunnable(){
 
-        /* if (!setupEconomy()) {
-            getLogger().severe("Vault не найден! Плагин отключен.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+            @Override
+            public void run() {
+                for(Player player : Bukkit.getOnlinePlayers()){
 
-        // Загрузка данных
-        regionDataMap = RegionAuction.DataManager.loadData();
-        getLogger().info("Данные загружены: " + regionDataMap.size() + " регионов.");
+                }
 
-        // Регистрация событий
-        getServer().getPluginManager().registerEvents(new RegionAuction(), this);
+            }
+        }.runTaskTimer(this, 0, 1);
 
-        Objects.requireNonNull(getServer().getPluginCommand("unique")).setExecutor(new RegionAuction());
-        */ // Plugin startup logic
 
     }
 
