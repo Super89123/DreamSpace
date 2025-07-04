@@ -148,9 +148,9 @@ public class Core implements Listener {
     public static void sendTelegramMessage(String message){
         try {
 
-            String botToken = "7975211101:AAEAkLj11OBpU3MME5flsMA9utmhk_A4MpM";
+            String botToken = "token";
             String method = "sendMessage";
-            String chat = "-1002358135016";
+            String chat = "group_id";
             String urlString = "https://api.telegram.org/bot" + botToken + "/" + method+"?chat_id="+chat+"&text="+message;
 
             URL url = new URL(urlString);
